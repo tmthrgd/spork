@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
@@ -31,7 +30,7 @@ var error404 = `<!doctype html>
 <p>The requested file was not found.</p>`
 
 func main() {
-	port := flag.Int("port", 8080, "the port to listen on")
+	addr := flag.String("addr", ":8080", "the address to listen on")
 	flag.Parse()
 
 	bus, err := dbus.SessionBus()
@@ -55,10 +54,10 @@ func main() {
 
 	router.Get("/", playlistHandler(bus))
 
-	fmt.Printf("Listening on :%d\n", *port)
+	fmt.Printf("Listening on %s\n", *addr)
 
 	srv := &http.Server{
-		Addr:    ":" + strconv.Itoa(*port),
+		Addr:    *addr,
 		Handler: router,
 	}
 
