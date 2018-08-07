@@ -8,6 +8,7 @@ var (
 	audObj dbus.BusObject
 )
 
+// BusConnect starts the dbus connection, it should only be called once.
 func BusConnect() error {
 	var err error
 	if conn, err = dbus.SessionBus(); err != nil {
