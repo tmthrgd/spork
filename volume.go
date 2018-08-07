@@ -14,7 +14,7 @@ var volumeTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 <h1>Volume Control</h1>
 Current volume: <span class=volume>{{.}}</span>%<br>
 <input type=range min=0 max=100 value="{{.}}" class=slider>
-<script>document.querySelector('.slider').addEventListener('input',e=>{document.querySelector('.volume').textContent=e.target.value;fetch('/volume/'+encodeURIComponent(e.target.valueAsNumber)).catch(console.error)},!1)</script>`))
+<script>document.querySelector('.slider').addEventListener('input',e=>{document.querySelector('.volume').textContent=e.target.value;fetch('/volume/'+encodeURIComponent(e.target.value)).catch(console.error)},!1)</script>`))
 
 func volumeHandler() http.HandlerFunc {
 	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
