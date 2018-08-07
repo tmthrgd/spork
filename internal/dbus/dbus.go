@@ -19,7 +19,3 @@ func SessionBus() (*Bus, error) {
 		conn.Object("org.atheme.audacious", "/org/atheme/audacious"),
 	}, nil
 }
-
-func (b *Bus) Close() error {
-	return b.conn.Close()
-}
