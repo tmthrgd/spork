@@ -10,6 +10,10 @@ var (
 
 // BusConnect starts the dbus connection, it should only be called once.
 func BusConnect() error {
+	if conn != nil {
+		panic("spork/internal/dbus: BusConnect called multiple times")
+	}
+
 	var err error
 	if conn, err = dbus.SessionBus(); err != nil {
 		return err
