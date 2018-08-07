@@ -13,11 +13,11 @@ import (
 var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 <meta charset=utf-8>
 <title>{{.Name}}</title>
-<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}.active{font-weight:bold}</style>
+<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}.active{font-weight:bold}li a{color:#444}</style>
 <h1>{{.Name}}</h1>
 <ol>
 {{- range $idx, $entry := .Entries}}
-<li{{if eq $idx $.Active}} class="active" id="current"{{end}}>{{.Title}} – {{.Length}}</li>
+<li{{if eq $idx $.Active}} class="active" id="current"{{end}}><a href="/jump/{{$idx}}">{{.Title}}</a> – {{.Length}}</li>
 {{- end}}
 </ol>`))
 

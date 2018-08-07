@@ -53,6 +53,7 @@ func main() {
 	router.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
 
 	router.Get("/", playlistHandler(bus))
+	router.Get("/jump/{pos}", jumpHandler(bus))
 
 	fmt.Printf("Listening on %s\n", *addr)
 

@@ -26,3 +26,7 @@ func (b *Bus) GetPlaylistName(ctx context.Context) (name string, err error) {
 	return name, b.audObj.CallWithContext(ctx,
 		"org.atheme.audacious.GetActivePlaylistName", 0).Store(&name)
 }
+
+func (b *Bus) PlaylistJump(ctx context.Context, pos uint32) error {
+	return b.audObj.CallWithContext(ctx, "org.atheme.audacious.Jump", 0, pos).Err
+}
