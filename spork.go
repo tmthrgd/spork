@@ -43,7 +43,12 @@ func main() {
 	notFoundHandler := handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8")
 
 	router := chi.NewRouter()
-	router.Use(middleware.GetHead)
+	router.Use(
+		middleware.GetHead,
+		handlers.AccessLogWrap(nil),
+		handlers.SecurityHeadersWrap(nil),
+		handlers.SetHeaderWrap("Server", "spork (audacious control panel)"),
+	)
 	router.NotFound(notFoundHandler.ServeHTTP)
 
 	now := time.Now()
@@ -52,17 +57,11 @@ func main() {
 
 	router.Get("/", playlistHandler(bus))
 
-	handler := handlers.AccessLog(router, nil)
-	handler = &handlers.SecurityHeaders{
-		Handler: router,
-	}
-	handler = handlers.SetHeader(handler, "Server", "spork (audacious control panel)")
-
 	fmt.Printf("Listening on :%d\n", *port)
 
 	srv := &http.Server{
 		Addr:    ":" + strconv.Itoa(*port),
-		Handler: handler,
+		Handler: router,
 	}
 
 	go func() {
