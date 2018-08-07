@@ -40,8 +40,6 @@ func main() {
 	}
 	defer bus.Close()
 
-	notFoundHandler := handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8")
-
 	router := chi.NewRouter()
 	router.Use(
 		middleware.GetHead,
@@ -49,7 +47,7 @@ func main() {
 		handlers.SecurityHeadersWrap(nil),
 		handlers.SetHeaderWrap("Server", "spork (audacious control panel)"),
 	)
-	router.NotFound(notFoundHandler.ServeHTTP)
+	router.NotFound(handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP)
 
 	now := time.Now()
 	router.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
