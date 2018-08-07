@@ -50,10 +50,12 @@ func main() {
 	router.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
 	router.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
 
-	router.Get("/", playlistHandler())
-	router.Get("/jump/{pos}", jumpHandler())
-	router.Get("/volume", volumeHandler())
-	router.Get("/volume/{vol}", setVolumeHandler())
+	noCache := router.With(middleware.NoCache)
+
+	noCache.Get("/", playlistHandler())
+	noCache.Get("/jump/{pos}", jumpHandler())
+	noCache.Get("/volume", volumeHandler())
+	noCache.Get("/volume/{vol}", setVolumeHandler())
 
 	fmt.Printf("Listening on %s\n", *addr)
 

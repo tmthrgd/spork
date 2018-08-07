@@ -23,8 +23,6 @@ func volumeHandler() http.HandlerFunc {
 			return err
 		}
 
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-
 		return templateExecute(w, volumeTmpl, volume)
 	})
 }
