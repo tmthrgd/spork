@@ -28,7 +28,11 @@ type playlistData struct {
 
 type playlistEntry struct {
 	Title  string
-	Length string
+	length int32
+}
+
+func (e playlistEntry) Length() string {
+	return fmt.Sprintf("%d:%02d", e.length/60, e.length%60)
 }
 
 func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
@@ -53,10 +57,7 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 				return err
 			}
 
-			playlist = append(playlist, playlistEntry{
-				title,
-				fmt.Sprintf("%d:%02d", length/60, length%60),
-			})
+			playlist = append(playlist, playlistEntry{title, length})
 		}
 
 		name, err := bus.GetPlaylistName(ctx)
