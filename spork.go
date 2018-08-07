@@ -52,6 +52,8 @@ func main() {
 
 	router.Get("/", playlistHandler())
 	router.Get("/jump/{pos}", jumpHandler())
+	router.Get("/volume", volumeHandler())
+	router.Get("/volume/{vol}", setVolumeHandler())
 
 	fmt.Printf("Listening on %s\n", *addr)
 

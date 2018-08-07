@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -26,6 +28,26 @@ func jumpHandler() http.HandlerFunc {
 		}
 
 		http.Redirect(w, r, "/#current", http.StatusTemporaryRedirect)
+		return nil
+	})
+}
+
+func setVolumeHandler() http.HandlerFunc {
+	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
+		ctx := r.Context()
+
+		vol, err := strconv.ParseUint(chi.URLParam(r, "vol"), 10, 7)
+		if err != nil {
+			return err
+		} else if vol > 100 {
+			return errors.New("spork: volume out of range")
+		}
+
+		if err := dbus.SetVolume(ctx, int32(vol)); err != nil {
+			return err
+		}
+
+		io.WriteString(w, "ok")
 		return nil
 	})
 }

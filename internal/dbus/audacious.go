@@ -41,3 +41,16 @@ func PlaylistJump(ctx context.Context, pos uint32) error {
 func Play(ctx context.Context) error {
 	return audObj.CallWithContext(ctx, "org.atheme.audacious.Play", 0).Err
 }
+
+// GetVolume returns the volume of the media player.
+func GetVolume(ctx context.Context) (volume int32, err error) {
+	var unused int32
+	return volume, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.Volume", 0).Store(&volume, &unused)
+}
+
+// SetVolume sets the volume of the media player to the given value.
+func SetVolume(ctx context.Context, volume int32) error {
+	return audObj.CallWithContext(ctx,
+		"org.atheme.audacious.SetVolume", 0, volume, volume).Err
+}
