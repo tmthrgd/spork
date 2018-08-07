@@ -26,7 +26,6 @@ func jumpHandler(bus *dbus.Bus) http.HandlerFunc {
 		}
 
 		http.Redirect(w, r, "/#current", http.StatusTemporaryRedirect)
-		//io.WriteString(w, `<script>history.back(-1)</script>`)
 		return nil
 	})
 }
