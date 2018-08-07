@@ -16,9 +16,7 @@ func SessionBus() (*Bus, error) {
 
 	return &Bus{
 		conn,
-
-		conn.Object("org.mpris.MediaPlayer2.audacious",
-			"/org/atheme/audacious"),
+		conn.Object("org.atheme.audacious", "/org/atheme/audacious"),
 	}, nil
 }
 
