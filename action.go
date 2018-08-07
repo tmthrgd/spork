@@ -8,7 +8,7 @@ import (
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
-func jumpHandler(bus *dbus.Bus) http.HandlerFunc {
+func jumpHandler() http.HandlerFunc {
 	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
@@ -17,11 +17,11 @@ func jumpHandler(bus *dbus.Bus) http.HandlerFunc {
 			return err
 		}
 
-		if err := bus.PlaylistJump(ctx, uint32(pos)); err != nil {
+		if err := dbus.PlaylistJump(ctx, uint32(pos)); err != nil {
 			return err
 		}
 
-		if err := bus.Play(ctx); err != nil {
+		if err := dbus.Play(ctx); err != nil {
 			return err
 		}
 

@@ -34,11 +34,11 @@ func (e playlistEntry) Length() string {
 	return fmt.Sprintf("%d:%02d", e.length/60, e.length%60)
 }
 
-func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
+func playlistHandler() http.HandlerFunc {
 	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
-		entries, err := bus.GetPlaylistLength(ctx)
+		entries, err := dbus.GetPlaylistLength(ctx)
 		if err != nil {
 			return err
 		}
@@ -46,12 +46,12 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 		playlist := make([]playlistEntry, 0, entries)
 
 		for entry := uint32(0); entry < uint32(entries); entry++ {
-			title, err := bus.GetSongTitle(ctx, entry)
+			title, err := dbus.GetSongTitle(ctx, entry)
 			if err != nil {
 				return err
 			}
 
-			length, err := bus.GetSongLength(ctx, entry)
+			length, err := dbus.GetSongLength(ctx, entry)
 			if err != nil {
 				return err
 			}
@@ -59,12 +59,12 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 			playlist = append(playlist, playlistEntry{title, length})
 		}
 
-		name, err := bus.GetPlaylistName(ctx)
+		name, err := dbus.GetPlaylistName(ctx)
 		if err != nil {
 			return err
 		}
 
-		active, err := bus.GetPlaylistPosition(ctx)
+		active, err := dbus.GetPlaylistPosition(ctx)
 		if err != nil {
 			return err
 		}

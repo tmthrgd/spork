@@ -2,20 +2,18 @@ package dbus
 
 import "github.com/godbus/dbus"
 
-type Bus struct {
+var (
 	conn *dbus.Conn
 
 	audObj dbus.BusObject
-}
+)
 
-func SessionBus() (*Bus, error) {
-	conn, err := dbus.SessionBus()
-	if err != nil {
-		return nil, err
+func BusConnect() error {
+	var err error
+	if conn, err = dbus.SessionBus(); err != nil {
+		return err
 	}
 
-	return &Bus{
-		conn,
-		conn.Object("org.atheme.audacious", "/org/atheme/audacious"),
-	}, nil
+	audObj = conn.Object("org.atheme.audacious", "/org/atheme/audacious")
+	return nil
 }

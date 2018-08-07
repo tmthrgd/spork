@@ -33,8 +33,7 @@ func main() {
 	addr := flag.String("addr", ":8080", "the address to listen on")
 	flag.Parse()
 
-	bus, err := dbus.SessionBus()
-	if err != nil {
+	if err := dbus.BusConnect(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -51,8 +50,8 @@ func main() {
 	router.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
 	router.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
 
-	router.Get("/", playlistHandler(bus))
-	router.Get("/jump/{pos}", jumpHandler(bus))
+	router.Get("/", playlistHandler())
+	router.Get("/jump/{pos}", jumpHandler())
 
 	fmt.Printf("Listening on %s\n", *addr)
 
