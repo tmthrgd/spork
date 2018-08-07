@@ -30,3 +30,7 @@ func (b *Bus) GetPlaylistName(ctx context.Context) (name string, err error) {
 func (b *Bus) PlaylistJump(ctx context.Context, pos uint32) error {
 	return b.audObj.CallWithContext(ctx, "org.atheme.audacious.Jump", 0, pos).Err
 }
+
+func (b *Bus) Play(ctx context.Context) error {
+	return b.audObj.CallWithContext(ctx, "org.atheme.audacious.Play", 0).Err
+}
