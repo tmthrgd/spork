@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -34,8 +33,7 @@ type playlistEntry struct {
 
 func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
-		ctx, cancel := context.WithCancel(r.Context())
-		defer cancel()
+		ctx := r.Context()
 
 		entries, err := bus.GetPlaylistLength(ctx)
 		if err != nil {
