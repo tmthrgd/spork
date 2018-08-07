@@ -50,6 +50,8 @@ func main() {
 	router.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
 	router.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
 
+	router.Get("/", playlistHandler(bus))
+
 	handler := handlers.AccessLog(router, nil)
 	handler = &handlers.SecurityHeaders{
 		Handler: router,
