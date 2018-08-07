@@ -5,7 +5,7 @@ import "github.com/godbus/dbus"
 type Bus struct {
 	conn *dbus.Conn
 
-	audaciousObject dbus.BusObject
+	audObj dbus.BusObject
 }
 
 func SessionBus() (*Bus, error) {
