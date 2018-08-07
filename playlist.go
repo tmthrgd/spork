@@ -33,14 +33,13 @@ type playlistEntry struct {
 }
 
 func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
 		ctx, cancel := context.WithCancel(r.Context())
 		defer cancel()
 
 		entries, err := bus.GetPlaylistLength(ctx)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			return err
 		}
 
 		playlist := make([]playlistEntry, 0, entries)
@@ -48,14 +47,12 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 		for entry := uint32(0); entry < uint32(entries); entry++ {
 			title, err := bus.GetSongTitle(ctx, entry)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+				return err
 			}
 
 			length, err := bus.GetSongLength(ctx, entry)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+				return err
 			}
 
 			playlist = append(playlist, playlistEntry{
@@ -66,14 +63,12 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 
 		name, err := bus.GetPlaylistName(ctx)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			return err
 		}
 
 		active, err := bus.GetPlaylistPosition(ctx)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			return err
 		}
 
 		var buf bytes.Buffer
@@ -82,10 +77,10 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 			Entries: playlist,
 			Active:  active,
 		}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			return err
 		}
 
 		buf.WriteTo(w)
-	}
+		return nil
+	})
 }
