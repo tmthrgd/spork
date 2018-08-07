@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"html/template"
 	"net/http"
 )
@@ -24,4 +25,14 @@ func httpHandlerError(handler func(http.ResponseWriter, *http.Request) error) ht
 
 		error500.Execute(w, err.Error())
 	}
+}
+
+func templateExecute(w http.ResponseWriter, tmpl *template.Template, data interface{}) error {
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return err
+	}
+
+	buf.WriteTo(w)
+	return nil
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -70,16 +69,10 @@ func playlistHandler(bus *dbus.Bus) http.HandlerFunc {
 			return err
 		}
 
-		var buf bytes.Buffer
-		if err := playlistTmpl.Execute(&buf, &playlistData{
+		return templateExecute(w, playlistTmpl, &playlistData{
 			Name:    name,
 			Entries: playlist,
 			Active:  active,
-		}); err != nil {
-			return err
-		}
-
-		buf.WriteTo(w)
-		return nil
+		})
 	})
 }
