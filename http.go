@@ -37,6 +37,10 @@ func templateExecute(w http.ResponseWriter, tmpl *template.Template, data interf
 		return err
 	}
 
-	buf.WriteTo(w)
+	if n, err := buf.WriteTo(w); n == 0 {
+		// Only forward the error if nothing was written.
+		return err
+	}
+
 	return nil
 }
