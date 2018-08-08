@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"html/template"
 	"net/http"
+
+	"github.com/go-chi/chi"
 )
 
 var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
@@ -43,4 +45,17 @@ func templateExecute(w http.ResponseWriter, tmpl *template.Template, data interf
 	}
 
 	return nil
+}
+
+// undoGetHead is a middleware that undoes the effect of chi/middleware.GetHead.
+func undoGetHead(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		if rctx != nil && rctx.RouteMethod != r.Method {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }

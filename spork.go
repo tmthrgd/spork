@@ -60,7 +60,10 @@ func main() {
 	})
 
 	router.Group(func(api chi.Router) {
-		api.Use(middleware.NoCache)
+		api.Use(
+			undoGetHead,
+			middleware.NoCache,
+		)
 
 		api.Get("/jump/{pos}", jumpHandler())
 		api.Get("/volume/{vol}", setVolumeHandler())
