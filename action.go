@@ -34,8 +34,6 @@ func jumpHandler() http.HandlerFunc {
 
 func setVolumeHandler() http.HandlerFunc {
 	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
-		ctx := r.Context()
-
 		vol, err := strconv.ParseUint(chi.URLParam(r, "vol"), 10, 7)
 		if err != nil {
 			return err
@@ -43,7 +41,7 @@ func setVolumeHandler() http.HandlerFunc {
 			return errors.New("spork: volume out of range")
 		}
 
-		if err := dbus.SetVolume(ctx, int32(vol)); err != nil {
+		if err := dbus.SetVolume(r.Context(), int32(vol)); err != nil {
 			return err
 		}
 
