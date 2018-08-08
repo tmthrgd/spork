@@ -42,6 +42,9 @@ func main() {
 	)
 	router.NotFound(notFoundHandler())
 
+	// pprof handler
+	router.Mount("/debug", middleware.Profiler())
+
 	// Asset routes
 	router.Group(func(r chi.Router) {
 		now := time.Now()
