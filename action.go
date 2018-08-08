@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -48,4 +49,31 @@ func setVolumeHandler() http.HandlerFunc {
 		io.WriteString(w, "ok")
 		return nil
 	})
+}
+
+func controlHandler(fn func(context.Context) error) http.HandlerFunc {
+	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+		if err := fn(r.Context()); err != nil {
+			return err
+		}
+
+		http.Redirect(w, r, "/controls", http.StatusTemporaryRedirect)
+		return nil
+	})
+}
+
+func playHandler() http.HandlerFunc {
+	return controlHandler(dbus.Play)
+}
+
+func pauseHandler() http.HandlerFunc {
+	return controlHandler(dbus.Pause)
+}
+
+func prevHandler() http.HandlerFunc {
+	return controlHandler(dbus.Reverse)
+}
+
+func nextHandler() http.HandlerFunc {
+	return controlHandler(dbus.Advance)
 }

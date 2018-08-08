@@ -57,6 +57,7 @@ func main() {
 
 		pages.Get("/", playlistHandler())
 		pages.Get("/volume", volumeHandler())
+		pages.Get("/controls", controlsHandler())
 	})
 
 	router.Group(func(api chi.Router) {
@@ -67,6 +68,10 @@ func main() {
 
 		api.Get("/jump/{pos}", jumpHandler())
 		api.Get("/volume/{vol}", setVolumeHandler())
+		api.Get("/controls/play", playHandler())
+		api.Get("/controls/pause", pauseHandler())
+		api.Get("/controls/prev", prevHandler())
+		api.Get("/controls/next", nextHandler())
 	})
 
 	fmt.Printf("Listening on %s\n", *addr)

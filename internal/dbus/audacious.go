@@ -42,6 +42,11 @@ func Play(ctx context.Context) error {
 	return audObj.CallWithContext(ctx, "org.atheme.audacious.Play", 0).Err
 }
 
+// Pause pauses the currently playing song.
+func Pause(ctx context.Context) error {
+	return audObj.CallWithContext(ctx, "org.atheme.audacious.Pause", 0).Err
+}
+
 // GetVolume returns the volume of the media player.
 func GetVolume(ctx context.Context) (volume int32, err error) {
 	var unused int32
@@ -53,4 +58,14 @@ func GetVolume(ctx context.Context) (volume int32, err error) {
 func SetVolume(ctx context.Context, volume int32) error {
 	return audObj.CallWithContext(ctx,
 		"org.atheme.audacious.SetVolume", 0, volume, volume).Err
+}
+
+// Advance skips ahead one song in the current playlist.
+func Advance(ctx context.Context) error {
+	return audObj.CallWithContext(ctx, "org.atheme.audacious.Advance", 0).Err
+}
+
+// Reverse skips backwards one song in the current playlist.
+func Reverse(ctx context.Context) error {
+	return audObj.CallWithContext(ctx, "org.atheme.audacious.Reverse", 0).Err
 }
