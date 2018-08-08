@@ -39,33 +39,36 @@ func main() {
 	)
 	router.NotFound(notFoundHandler())
 
-	router.Group(func(assets chi.Router) {
+	// Asset routes
+	router.Group(func(r chi.Router) {
 		now := time.Now()
-		assets.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
-		assets.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
+		r.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
+		r.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
 	})
 
-	router.Group(func(pages chi.Router) {
-		pages.Use(middleware.NoCache)
+	// HTML page routes
+	router.Group(func(r chi.Router) {
+		r.Use(middleware.NoCache)
 
-		pages.Get("/", playlistHandler())
-		pages.Get("/volume", volumeHandler())
-		pages.Get("/controls", controlsHandler())
+		r.Get("/", playlistHandler())
+		r.Get("/volume", volumeHandler())
+		r.Get("/controls", controlsHandler())
 	})
 
-	router.Group(func(api chi.Router) {
-		api.Use(
+	// API routes
+	router.Group(func(r chi.Router) {
+		r.Use(
 			undoGetHead,
 			middleware.NoCache,
 		)
 
-		api.Get("/jump/{pos}", jumpHandler())
-		api.Get("/volume/{vol}", setVolumeHandler())
-		api.Get("/controls/play", playHandler())
-		api.Get("/controls/pause", pauseHandler())
-		api.Get("/controls/stop", stopHandler())
-		api.Get("/controls/prev", prevHandler())
-		api.Get("/controls/next", nextHandler())
+		r.Get("/jump/{pos}", jumpHandler())
+		r.Get("/volume/{vol}", setVolumeHandler())
+		r.Get("/controls/play", playHandler())
+		r.Get("/controls/pause", pauseHandler())
+		r.Get("/controls/stop", stopHandler())
+		r.Get("/controls/prev", prevHandler())
+		r.Get("/controls/next", nextHandler())
 	})
 
 	fmt.Printf("Listening on %s\n", *addr)
