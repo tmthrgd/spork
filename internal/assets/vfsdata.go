@@ -21,8 +21,26 @@ var FileSystem = func() http.FileSystem {
 	fs := vfsgen۰FS{
 		"/": &vfsgen۰DirInfo{
 			name:    "/",
-			modTime: time.Date(2018, 8, 8, 14, 30, 17, 263257834, time.UTC),
+			modTime: time.Date(2018, 8, 8, 14, 30, 27, 805305174, time.UTC),
 		},
+		"/style.css": &vfsgen۰CompressedFileInfo{
+			name:             "style.css",
+			modTime:          time.Date(2018, 8, 8, 14, 36, 44, 914998551, time.UTC),
+			uncompressedSize: 357,
+
+			compressedContent: []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x6c\xcf\xc1\x6e\xc3\x20\x0c\x80\xe1\x73\x79\x0a\x4b\xbb\x96\xaa\xe9\xb2\x6a\x22\xda\x93\x4c\x3b\x10\x60\x80\x4a\x6d\x44\x9c\x35\xe9\xd4\x77\x9f\x48\xa2\x1d\xa6\x1d\xb1\x3e\xf8\x71\x4f\x76\x86\x6f\xb1\xbb\xea\x49\xde\xa2\xe5\xa0\xe0\xfc\x72\xcc\x53\x27\xea\xac\xf8\x88\x0a\xda\x63\x9e\x40\x8f\x4c\x9d\xd8\x65\x6d\x6d\x44\xaf\xe0\x08\xcd\xc6\x3e\x09\x59\x0e\xf1\xee\x14\x34\xaf\x75\xb4\x4b\x11\x9d\x0c\x2e\xfa\xc0\x0a\x9a\xc3\xb9\x2a\x43\x89\x8a\x82\xa7\xb6\x6d\x3b\xf1\x10\x22\x34\x7b\x08\xa7\x3d\x84\xe7\x9a\xff\x73\xe3\xb4\x90\x43\xd6\xde\xc9\x9c\xf4\x9c\xe2\xc0\x70\xd0\x86\xe3\x97\xab\x7c\x49\xde\x36\xde\x53\xb2\xff\xf9\x14\x41\x57\xbc\x96\x7f\xc3\xab\x32\x84\x5c\x28\x0d\x2b\x61\x37\xb1\xb4\xce\x50\xd1\x1c\x09\x15\x20\xa1\x5b\x74\xc4\x3c\xf2\x3b\xcf\xd9\xbd\x15\x8d\xde\x7d\x28\x25\xaf\x74\x97\xcb\x41\x72\xd1\xe6\x52\x1f\xe8\xb5\xb9\xf8\x42\x23\x5a\xb9\x2d\x9a\xea\xe7\x7c\x71\x73\x27\x1e\x3f\x01\x00\x00\xff\xff\xd7\x15\xce\x8a\x65\x01\x00\x00"),
+		},
+		"/volume.js": &vfsgen۰CompressedFileInfo{
+			name:             "volume.js",
+			modTime:          time.Date(2018, 8, 8, 14, 30, 23, 683000000, time.UTC),
+			uncompressedSize: 221,
+
+			compressedContent: []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x74\xcc\xc1\x4a\x03\x31\x10\x06\xe0\x73\xf3\x14\x39\x08\x49\xa0\x4c\x1f\x60\xa9\x97\xe2\x41\xf0\xa4\x78\x6f\x48\xfe\xea\x42\x76\xa6\x4e\x26\x8b\x52\xf6\xdd\x45\x3c\x79\xf0\x01\xbe\xaf\x4a\x19\x0b\xd8\xe8\x63\x40\xbf\x5e\xd0\x50\x4c\x34\x06\xea\x6d\xae\xd0\x90\x28\xd7\xfa\xb0\x82\xed\x69\xee\x06\x86\xc6\x30\xf3\x75\x58\xd8\x7b\xf8\xe3\xbd\xbf\xb9\xdd\xbf\xc7\x2a\x6d\x2c\x08\x89\x0c\x9f\x76\x12\x36\xb0\xf9\xa3\x07\x59\xd6\x37\x18\xad\xb9\x0d\x4c\xce\xed\x2e\xb0\xf2\x1e\xcf\x87\x5f\x70\xb8\xbb\x81\x8b\x54\xbc\x3e\x3f\x9e\x64\xb9\x0a\x83\x2d\xfe\x55\x69\x3b\x27\x2a\xf9\x87\x15\xe1\x2e\x0d\x04\x55\xd1\x34\xb9\x6d\xef\x2f\xb9\x75\xa4\xe9\x3b\x00\x00\xff\xff\x6a\xc9\xc0\x4c\xdd\x00\x00\x00"),
+		},
+	}
+	fs["/"].(*vfsgen۰DirInfo).entries = []os.FileInfo{
+		fs["/style.css"].(os.FileInfo),
+		fs["/volume.js"].(os.FileInfo),
 	}
 
 	return fs
@@ -38,6 +56,16 @@ func (fs vfsgen۰FS) Open(path string) (http.File, error) {
 	}
 
 	switch f := f.(type) {
+	case *vfsgen۰CompressedFileInfo:
+		gr, err := gzip.NewReader(bytes.NewReader(f.compressedContent))
+		if err != nil {
+			// This should never happen because we generate the gzip bytes such that they are always valid.
+			panic("unexpected error reading own gzip compressed bytes: " + err.Error())
+		}
+		return &vfsgen۰CompressedFile{
+			vfsgen۰CompressedFileInfo: f,
+			gr: gr,
+		}, nil
 	case *vfsgen۰DirInfo:
 		return &vfsgen۰Dir{
 			vfsgen۰DirInfo: f,
@@ -48,12 +76,76 @@ func (fs vfsgen۰FS) Open(path string) (http.File, error) {
 	}
 }
 
-// We already imported "compress/gzip" and "io/ioutil", but ended up not using them. Avoid unused import error.
-var _ = gzip.Reader{}
-var _ = ioutil.Discard
+// vfsgen۰CompressedFileInfo is a static definition of a gzip compressed file.
+type vfsgen۰CompressedFileInfo struct {
+	name              string
+	modTime           time.Time
+	compressedContent []byte
+	uncompressedSize  int64
+}
 
-// We already imported "bytes", but ended up not using it. Avoid unused import error.
-var _ = bytes.Reader{}
+func (f *vfsgen۰CompressedFileInfo) Readdir(count int) ([]os.FileInfo, error) {
+	return nil, fmt.Errorf("cannot Readdir from file %s", f.name)
+}
+func (f *vfsgen۰CompressedFileInfo) Stat() (os.FileInfo, error) { return f, nil }
+
+func (f *vfsgen۰CompressedFileInfo) GzipBytes() []byte {
+	return f.compressedContent
+}
+
+func (f *vfsgen۰CompressedFileInfo) Name() string       { return f.name }
+func (f *vfsgen۰CompressedFileInfo) Size() int64        { return f.uncompressedSize }
+func (f *vfsgen۰CompressedFileInfo) Mode() os.FileMode  { return 0444 }
+func (f *vfsgen۰CompressedFileInfo) ModTime() time.Time { return f.modTime }
+func (f *vfsgen۰CompressedFileInfo) IsDir() bool        { return false }
+func (f *vfsgen۰CompressedFileInfo) Sys() interface{}   { return nil }
+
+// vfsgen۰CompressedFile is an opened compressedFile instance.
+type vfsgen۰CompressedFile struct {
+	*vfsgen۰CompressedFileInfo
+	gr      *gzip.Reader
+	grPos   int64 // Actual gr uncompressed position.
+	seekPos int64 // Seek uncompressed position.
+}
+
+func (f *vfsgen۰CompressedFile) Read(p []byte) (n int, err error) {
+	if f.grPos > f.seekPos {
+		// Rewind to beginning.
+		err = f.gr.Reset(bytes.NewReader(f.compressedContent))
+		if err != nil {
+			return 0, err
+		}
+		f.grPos = 0
+	}
+	if f.grPos < f.seekPos {
+		// Fast-forward.
+		_, err = io.CopyN(ioutil.Discard, f.gr, f.seekPos-f.grPos)
+		if err != nil {
+			return 0, err
+		}
+		f.grPos = f.seekPos
+	}
+	n, err = f.gr.Read(p)
+	f.grPos += int64(n)
+	f.seekPos = f.grPos
+	return n, err
+}
+func (f *vfsgen۰CompressedFile) Seek(offset int64, whence int) (int64, error) {
+	switch whence {
+	case io.SeekStart:
+		f.seekPos = 0 + offset
+	case io.SeekCurrent:
+		f.seekPos += offset
+	case io.SeekEnd:
+		f.seekPos = f.uncompressedSize + offset
+	default:
+		panic(fmt.Errorf("invalid whence value: %v", whence))
+	}
+	return f.seekPos, nil
+}
+func (f *vfsgen۰CompressedFile) Close() error {
+	return f.gr.Close()
+}
 
 // vfsgen۰DirInfo is a static definition of a directory.
 type vfsgen۰DirInfo struct {
