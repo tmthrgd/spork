@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -26,6 +27,9 @@ const (
 )
 
 func main() {
+	runtime.SetBlockProfileRate(5)
+	runtime.SetMutexProfileFraction(5)
+
 	addr := flag.String("addr", ":8080", "the address to listen on")
 	flag.Parse()
 
