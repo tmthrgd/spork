@@ -15,9 +15,9 @@ var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
 <h1>500 Internal Server Error</h1>
 <p>{{.}}</p>`))
 
-// httpHandlerError converts a handler with an error return to a http.HandlerFunc,
+// errorHandler converts a handler with an error return to a http.HandlerFunc,
 // sending a 500 Internal Server Error to the client when an error is returned.
-func httpHandlerError(handler func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
+func errorHandler(handler func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := handler(w, r)
 		if err == nil {

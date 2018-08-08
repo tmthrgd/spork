@@ -35,7 +35,7 @@ func (e playlistEntry) Length() string {
 }
 
 func playlistHandler() http.HandlerFunc {
-	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
+	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
 		entries, err := dbus.GetPlaylistLength(ctx)

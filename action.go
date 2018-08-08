@@ -11,7 +11,7 @@ import (
 )
 
 func jumpHandler() http.HandlerFunc {
-	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
+	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
 		pos, err := strconv.ParseUint(chi.URLParam(r, "pos"), 10, 32)
@@ -33,7 +33,7 @@ func jumpHandler() http.HandlerFunc {
 }
 
 func setVolumeHandler() http.HandlerFunc {
-	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
+	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		vol, err := strconv.ParseUint(chi.URLParam(r, "vol"), 10, 7)
 		if err != nil {
 			return err

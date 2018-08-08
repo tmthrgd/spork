@@ -17,7 +17,7 @@ Current volume: <span class=volume>{{.}}</span>%<br>
 <script>document.querySelector('.slider').addEventListener('input',e=>{document.querySelector('.volume').textContent=e.target.value;fetch('/volume/'+encodeURIComponent(e.target.value)).catch(console.error)},!1)</script>`))
 
 func volumeHandler() http.HandlerFunc {
-	return httpHandlerError(func(w http.ResponseWriter, r *http.Request) error {
+	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		volume, err := dbus.GetVolume(r.Context())
 		if err != nil {
 			return err
