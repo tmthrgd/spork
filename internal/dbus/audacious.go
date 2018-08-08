@@ -42,9 +42,14 @@ func Play(ctx context.Context) error {
 	return audObj.CallWithContext(ctx, "org.atheme.audacious.Play", 0).Err
 }
 
-// Pause pauses the currently playing song.
+// Pause pauses playback of the currently playing song.
 func Pause(ctx context.Context) error {
 	return audObj.CallWithContext(ctx, "org.atheme.audacious.Pause", 0).Err
+}
+
+// Stop stops playback of the currently playing song.
+func Stop(ctx context.Context) error {
+	return audObj.CallWithContext(ctx, "org.atheme.audacious.Stop", 0).Err
 }
 
 // GetVolume returns the volume of the media player.

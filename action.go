@@ -70,6 +70,10 @@ func pauseHandler() http.HandlerFunc {
 	return controlHandler(dbus.Pause)
 }
 
+func stopHandler() http.HandlerFunc {
+	return controlHandler(dbus.Stop)
+}
+
 func prevHandler() http.HandlerFunc {
 	return controlHandler(dbus.Reverse)
 }

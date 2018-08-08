@@ -63,6 +63,7 @@ func main() {
 		api.Get("/volume/{vol}", setVolumeHandler())
 		api.Get("/controls/play", playHandler())
 		api.Get("/controls/pause", pauseHandler())
+		api.Get("/controls/stop", stopHandler())
 		api.Get("/controls/prev", prevHandler())
 		api.Get("/controls/next", nextHandler())
 	})
