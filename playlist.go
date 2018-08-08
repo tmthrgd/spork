@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tmthrgd/spork/internal/dbus"
+	"golang.org/x/sync/errgroup"
 )
 
 var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
@@ -44,20 +45,39 @@ func playlistHandler() http.HandlerFunc {
 			return err
 		}
 
-		playlist := make([]playlistEntry, 0, entries)
+		playlist := make([]playlistEntry, entries)
+
+		g, gctx := errgroup.WithContext(ctx)
+		sem := make(chan struct{}, 8)
 
 		for entry := uint32(0); entry < uint32(entries); entry++ {
-			title, err := dbus.GetSongTitle(ctx, entry)
-			if err != nil {
-				return err
+			select {
+			case sem <- struct{}{}:
+			case <-gctx.Done():
+				return g.Wait()
 			}
 
-			length, err := dbus.GetSongLength(ctx, entry)
-			if err != nil {
-				return err
-			}
+			entry := entry
+			g.Go(func() error {
+				defer func() { <-sem }()
 
-			playlist = append(playlist, playlistEntry{title, length})
+				title, err := dbus.GetSongTitle(gctx, entry)
+				if err != nil {
+					return err
+				}
+
+				length, err := dbus.GetSongLength(gctx, entry)
+				if err != nil {
+					return err
+				}
+
+				playlist[entry] = playlistEntry{title, length}
+				return nil
+			})
+		}
+
+		if err := g.Wait(); err != nil {
+			return err
 		}
 
 		name, err := dbus.GetPlaylistName(ctx)
