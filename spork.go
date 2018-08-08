@@ -56,7 +56,6 @@ func main() {
 		r.Use(middleware.NoCache)
 
 		r.Get("/", playlistHandler())
-		r.Get("/volume", volumeHandler())
 		r.Get("/controls", controlsHandler())
 	})
 
@@ -68,12 +67,12 @@ func main() {
 		)
 
 		r.Get("/jump/{pos}", jumpHandler())
-		r.Get("/volume/{vol}", setVolumeHandler())
 		r.Get("/controls/play", playHandler())
 		r.Get("/controls/pause", pauseHandler())
 		r.Get("/controls/stop", stopHandler())
 		r.Get("/controls/prev", prevHandler())
 		r.Get("/controls/next", nextHandler())
+		r.Get("/controls/volume/{vol}", setVolumeHandler())
 	})
 
 	fmt.Printf("Listening on %s\n", *addr)
