@@ -17,12 +17,12 @@ import (
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
-var (
+const (
 	favicon = "\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\b\x06\x00\x00\x00\x1f\xf3\xffa\x00\x00\x00\x16IDATx\xdacd\xa0\x100\x8e\x1a0j\xc0\xa8\x01\xc3\xc5\x00\x00&\x98\x00\x11\x9b\x92AZ\x00\x00\x00\x00IEND\xaeB`\x82"
 	robots  = "User-agent: *\nDisallow: /"
 )
 
-var error404 = `<!doctype html>
+const error404 = `<!doctype html>
 <meta charset=utf-8>
 <title>404 Not Found</title>
 <style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
