@@ -22,13 +22,6 @@ const (
 	robots  = "User-agent: *\nDisallow: /"
 )
 
-const error404 = `<!doctype html>
-<meta charset=utf-8>
-<title>404 Not Found</title>
-<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
-<h1>404 Not Found</h1>
-<p>The requested file was not found.</p>`
-
 func main() {
 	addr := flag.String("addr", ":8080", "the address to listen on")
 	flag.Parse()
@@ -44,7 +37,7 @@ func main() {
 		handlers.SecurityHeadersWrap(nil),
 		handlers.SetHeaderWrap("Server", "spork (audacious control panel)"),
 	)
-	router.NotFound(handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP)
+	router.NotFound(notFoundHandler())
 
 	router.Group(func(assets chi.Router) {
 		now := time.Now()

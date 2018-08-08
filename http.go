@@ -6,7 +6,15 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/tmthrgd/httphandlers"
 )
+
+const error404 = `<!doctype html>
+<meta charset=utf-8>
+<title>404 Not Found</title>
+<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
+<h1>404 Not Found</h1>
+<p>The requested file was not found.</p>`
 
 var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
 <meta charset=utf-8>
@@ -14,6 +22,11 @@ var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
 <style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
 <h1>500 Internal Server Error</h1>
 <p>{{.}}</p>`))
+
+// notFoundHandler returns a handler that serves a 404 error page.
+func notFoundHandler() http.HandlerFunc {
+	return handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP
+}
 
 // errorHandler converts a handler with an error return to a http.HandlerFunc,
 // sending a 500 Internal Server Error to the client when an error is returned.
