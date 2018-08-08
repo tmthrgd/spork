@@ -28,7 +28,7 @@ func jumpHandler() http.HandlerFunc {
 			return err
 		}
 
-		http.Redirect(w, r, "/#current", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/playlist#current", http.StatusTemporaryRedirect)
 		return nil
 	})
 }
@@ -57,7 +57,7 @@ func controlHandler(fn func(context.Context) error) http.HandlerFunc {
 			return err
 		}
 
-		http.Redirect(w, r, "/controls", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return nil
 	})
 }

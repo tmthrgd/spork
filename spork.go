@@ -55,8 +55,8 @@ func main() {
 	router.Group(func(r chi.Router) {
 		r.Use(middleware.NoCache)
 
-		r.Get("/", playlistHandler())
-		r.Get("/controls", controlsHandler())
+		r.Get("/", controlsHandler())
+		r.Get("/playlist", playlistHandler())
 	})
 
 	// API routes
