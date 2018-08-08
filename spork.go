@@ -1,5 +1,7 @@
 package main
 
+//go:generate go run -tags=dev internal/assets/generate.go
+
 import (
 	"context"
 	"flag"
@@ -14,6 +16,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/tmthrgd/httphandlers"
+	"github.com/tmthrgd/spork/internal/assets"
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
@@ -44,6 +47,8 @@ func main() {
 		now := time.Now()
 		r.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
 		r.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
+
+		r.Mount("/assets", http.StripPrefix("/assets", http.FileServer(assets.FileSystem)))
 	})
 
 	// HTML page routes
