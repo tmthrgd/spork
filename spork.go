@@ -46,16 +46,25 @@ func main() {
 	)
 	router.NotFound(handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP)
 
-	now := time.Now()
-	router.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
-	router.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
+	router.Group(func(assets chi.Router) {
+		now := time.Now()
+		assets.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
+		assets.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
+	})
 
-	noCache := router.With(middleware.NoCache)
+	router.Group(func(pages chi.Router) {
+		pages.Use(middleware.NoCache)
 
-	noCache.Get("/", playlistHandler())
-	noCache.Get("/jump/{pos}", jumpHandler())
-	noCache.Get("/volume", volumeHandler())
-	noCache.Get("/volume/{vol}", setVolumeHandler())
+		pages.Get("/", playlistHandler())
+		pages.Get("/volume", volumeHandler())
+	})
+
+	router.Group(func(api chi.Router) {
+		api.Use(middleware.NoCache)
+
+		api.Get("/jump/{pos}", jumpHandler())
+		api.Get("/volume/{vol}", setVolumeHandler())
+	})
 
 	fmt.Printf("Listening on %s\n", *addr)
 
