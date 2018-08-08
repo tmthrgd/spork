@@ -26,6 +26,10 @@ h1, h2, h3 {
 	text-decoration: none;
 }
 
+.page-controls .controls {
+	text-align: center;
+}
+
 input[type=range]::-moz-range-track {
 	background-color: lightgrey;
 }
