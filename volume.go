@@ -7,7 +7,7 @@ import (
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
-var volumeTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
+var volumeTmpl = template.Must(template.New("volume").Parse(`<!doctype html>
 <meta charset=utf-8>
 <title>Volume Control</title>
 <style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}input[type=range]::-moz-range-track{background-color:lightgrey}</style>
