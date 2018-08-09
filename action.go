@@ -70,22 +70,8 @@ func controlHandler(fn func(context.Context) error) http.HandlerFunc {
 	})
 }
 
-func playHandler() http.HandlerFunc {
-	return controlHandler(dbus.Play)
-}
-
-func playPauseHandler() http.HandlerFunc {
-	return controlHandler(dbus.PlayPause)
-}
-
-func stopHandler() http.HandlerFunc {
-	return controlHandler(dbus.Stop)
-}
-
-func prevHandler() http.HandlerFunc {
-	return controlHandler(dbus.Reverse)
-}
-
-func nextHandler() http.HandlerFunc {
-	return controlHandler(dbus.Advance)
-}
+func playHandler() http.HandlerFunc      { return controlHandler(dbus.Play) }
+func playPauseHandler() http.HandlerFunc { return controlHandler(dbus.PlayPause) }
+func stopHandler() http.HandlerFunc      { return controlHandler(dbus.Stop) }
+func prevHandler() http.HandlerFunc      { return controlHandler(dbus.Reverse) }
+func nextHandler() http.HandlerFunc      { return controlHandler(dbus.Advance) }
