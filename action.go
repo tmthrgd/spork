@@ -71,8 +71,8 @@ func playHandler() http.HandlerFunc {
 	return controlHandler(dbus.Play)
 }
 
-func pauseHandler() http.HandlerFunc {
-	return controlHandler(dbus.Pause)
+func playPauseHandler() http.HandlerFunc {
+	return controlHandler(dbus.PlayPause)
 }
 
 func stopHandler() http.HandlerFunc {

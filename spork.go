@@ -74,8 +74,7 @@ func main() {
 		)
 
 		r.Get("/jump/{pos}", jumpHandler())
-		r.Get("/controls/play", playHandler())
-		r.Get("/controls/pause", pauseHandler())
+		r.Get("/controls/playpause", playPauseHandler())
 		r.Get("/controls/stop", stopHandler())
 		r.Get("/controls/prev", prevHandler())
 		r.Get("/controls/next", nextHandler())

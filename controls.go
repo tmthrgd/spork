@@ -14,7 +14,7 @@ var controlTmpl = template.Must(template.New("control").Parse(`<!doctype html>
 <body class=page-controls>
 <h1>Play Controls</h1>
 <div class=controls>
-<a href=/controls/prev>⏮</a> <a href=/controls/stop>⏹</a> <a href=/controls/pause>⏸</a> <a href=/controls/play>▶️</a> <a href=/controls/next>⏭</a><br>
+<a href=/controls/prev>⏮</a> <a href=/controls/stop>⏹</a> <a href=/controls/playpause>⏯</a> <a href=/controls/next>⏭</a><br>
 <input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
 </div>
 <a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
