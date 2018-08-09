@@ -1,13 +1,12 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
 
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
-var controlTmpl = template.Must(template.New("control").Parse(`<!doctype html>
+var controlTmpl = newTemplate(`<!doctype html>
 <meta charset=utf-8>
 <title>Play Controls</title>
 <link rel=stylesheet href=/assets/style.css>
@@ -20,7 +19,7 @@ var controlTmpl = template.Must(template.New("control").Parse(`<!doctype html>
 </div>
 <a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
 <script defer src=/assets/fetch-helpers.js></script>
-<script defer src=/assets/controls.js></script>`))
+<script defer src=/assets/controls.js></script>`)
 
 func controlsHandler() http.HandlerFunc {
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {

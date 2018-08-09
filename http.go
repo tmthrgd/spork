@@ -19,12 +19,12 @@ const error404 = `<!doctype html>
 <h1>404 Not Found</h1>
 <p>The requested file was not found.</p>`
 
-var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
+var error500 = newTemplate(`<!doctype html>
 <meta charset=utf-8>
 <title>500 Internal Server Error</title>
 <link rel=stylesheet href=/assets/style.css>
 <h1>500 Internal Server Error</h1>
-<p>{{.Type}}: {{- if .Name}} {{.Name}}: {{- end}} {{.Message}}</p>`))
+<p>{{.Type}}: {{- if .Name}} {{.Name}}: {{- end}} {{.Message}}</p>`)
 
 const error502NoAudacious = `<!doctype html>
 <meta charset=utf-8>
@@ -97,4 +97,10 @@ func undoGetHead(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+// newTemplate parses source and returns a new html/template.Template. It
+// panics if source is invalid.
+func newTemplate(source string) *template.Template {
+	return template.Must(template.New("").Parse(source))
 }

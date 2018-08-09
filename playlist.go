@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 
 	"github.com/tmthrgd/spork/internal/dbus"
 	"golang.org/x/sync/errgroup"
 )
 
-var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
+var playlistTmpl = newTemplate(`<!doctype html>
 <meta charset=utf-8>
 <title>{{.Name}}</title>
 <link rel=stylesheet href=/assets/style.css>
@@ -31,7 +30,7 @@ var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 {{- end}}
 </ol>
 <script defer src=/assets/fetch-helpers.js></script>
-<script defer src=/assets/playlist.js></script>`))
+<script defer src=/assets/playlist.js></script>`)
 
 type playlistData struct {
 	Name    string
