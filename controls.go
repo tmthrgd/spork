@@ -18,8 +18,8 @@ var controlTmpl = newTemplate(`<!doctype html>
 <a href=/controls/playpause title=Play/Pause>⏯</a>
 <a href=/controls/next title=Next>⏭</a>
 &nbsp;
-<a href=/controls/repeat title=Repeat {{- if .Repeat}} class="active"{{end}}>🔁</a>
-<a href=/controls/shuffle title=Shuffle {{- if .Shuffle}} class="active"{{end}}>🔀</a>
+<a href=/controls/repeat title=Repeat data-toggle {{- if .Repeat}} class="active"{{end}}>🔁</a>
+<a href=/controls/shuffle title=Shuffle data-toggle {{- if .Shuffle}} class="active"{{end}}>🔀</a>
 <br>
 <input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
 <p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>

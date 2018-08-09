@@ -12,9 +12,9 @@ import (
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
-func actionHandlerResponse(w http.ResponseWriter, r *http.Request, redirect string) error {
+func actionHandlerResponse(w http.ResponseWriter, r *http.Request, ok, redirect string) error {
 	if httputils.Negotiate(r.Header, "Accept", "text/html", "text/plain") == "text/plain" {
-		io.WriteString(w, "ok")
+		io.WriteString(w, ok)
 	} else {
 		http.Redirect(w, r, redirect, http.StatusTemporaryRedirect)
 	}
@@ -39,7 +39,7 @@ func jumpHandler() http.HandlerFunc {
 			return err
 		}
 
-		return actionHandlerResponse(w, r, "/playlist#current")
+		return actionHandlerResponse(w, r, "ok", "/playlist#current")
 	})
 }
 
@@ -56,24 +56,36 @@ func setVolumeHandler() http.HandlerFunc {
 			return err
 		}
 
-		return actionHandlerResponse(w, r, "/")
+		return actionHandlerResponse(w, r, "ok", "/")
 	})
 }
 
-func controlHandler(fn func(context.Context) error) http.HandlerFunc {
+func controlHandler(fn func(context.Context) error, statusFn func(context.Context) (bool, error)) http.HandlerFunc {
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
-		if err := fn(r.Context()); err != nil {
+		ctx := r.Context()
+
+		if err := fn(ctx); err != nil {
 			return err
 		}
 
-		return actionHandlerResponse(w, r, "/")
+		ok := "ok"
+		if statusFn != nil {
+			on, err := statusFn(ctx)
+			if err != nil {
+				return err
+			}
+
+			ok = strconv.FormatBool(on)
+		}
+
+		return actionHandlerResponse(w, r, ok, "/")
 	})
 }
 
-func playHandler() http.HandlerFunc      { return controlHandler(dbus.Play) }
-func playPauseHandler() http.HandlerFunc { return controlHandler(dbus.PlayPause) }
-func stopHandler() http.HandlerFunc      { return controlHandler(dbus.Stop) }
-func prevHandler() http.HandlerFunc      { return controlHandler(dbus.Reverse) }
-func nextHandler() http.HandlerFunc      { return controlHandler(dbus.Advance) }
-func repeatHandler() http.HandlerFunc    { return controlHandler(dbus.ToggleRepeat) }
-func shuffleHandler() http.HandlerFunc   { return controlHandler(dbus.ToggleShuffle) }
+func playHandler() http.HandlerFunc      { return controlHandler(dbus.Play, nil) }
+func playPauseHandler() http.HandlerFunc { return controlHandler(dbus.PlayPause, nil) }
+func stopHandler() http.HandlerFunc      { return controlHandler(dbus.Stop, nil) }
+func prevHandler() http.HandlerFunc      { return controlHandler(dbus.Reverse, nil) }
+func nextHandler() http.HandlerFunc      { return controlHandler(dbus.Advance, nil) }
+func repeatHandler() http.HandlerFunc    { return controlHandler(dbus.ToggleRepeat, dbus.GetRepeat) }
+func shuffleHandler() http.HandlerFunc   { return controlHandler(dbus.ToggleShuffle, dbus.GetShuffle) }
