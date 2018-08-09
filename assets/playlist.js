@@ -15,6 +15,14 @@ es.onmessage = msg => {
 	if (item) {
 		item.id = 'current';
 		item.classList.add('active');
+
+		if (location.hash === '#current') {
+			item.scrollIntoView({
+				block: 'start',
+				inline: 'start',
+				behavior: 'smooth',
+			});
+		}
 	}
 };
 
