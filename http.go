@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"html/template"
+	"io"
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/godbus/dbus"
 	"github.com/tmthrgd/httphandlers"
 )
 
@@ -23,13 +25,21 @@ var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
 <h1>500 Internal Server Error</h1>
 <p>{{.}}</p>`))
 
+const error502NoAudacious = `<!doctype html>
+<meta charset=utf-8>
+<title>502 Bad Gateway</title>
+<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
+<h1>502 Bad Gateway</h1>
+<p>The Audacious Media Player is not currently running. Please start Audacious and try again.</p>`
+
 // notFoundHandler returns a handler that serves a 404 error page.
 func notFoundHandler() http.HandlerFunc {
 	return handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP
 }
 
 // errorHandler converts a handler with an error return to a http.HandlerFunc,
-// sending a 500 Internal Server Error to the client when an error is returned.
+// sending a 500 Internal Server Error, or a 502 Bad Gateway where appropriate,
+// to the client when an error is returned.
 func errorHandler(handler func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := handler(w, r)
@@ -38,6 +48,15 @@ func errorHandler(handler func(http.ResponseWriter, *http.Request) error) http.H
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		derr, ok := err.(dbus.Error)
+		if ok && derr.Name == "org.freedesktop.DBus.Error.ServiceUnknown" {
+			w.WriteHeader(http.StatusBadGateway)
+
+			io.WriteString(w, error502NoAudacious)
+			return
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
 
 		error500.Execute(w, err.Error())
