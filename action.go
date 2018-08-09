@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"github.com/tmthrgd/httputils"
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
@@ -33,6 +34,16 @@ func jumpHandler() http.HandlerFunc {
 	})
 }
 
+func controlHandlerResponse(w http.ResponseWriter, r *http.Request) error {
+	if httputils.Negotiate(r.Header, "Accept", "text/html", "text/plain") == "text/plain" {
+		io.WriteString(w, "ok")
+	} else {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	}
+
+	return nil
+}
+
 func setVolumeHandler() http.HandlerFunc {
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		vol, err := strconv.ParseUint(chi.URLParam(r, "vol"), 10, 7)
@@ -46,8 +57,7 @@ func setVolumeHandler() http.HandlerFunc {
 			return err
 		}
 
-		io.WriteString(w, "ok")
-		return nil
+		return controlHandlerResponse(w, r)
 	})
 }
 
@@ -57,13 +67,7 @@ func controlHandler(fn func(context.Context) error) http.HandlerFunc {
 			return err
 		}
 
-		if r.Header.Get("Origin") == "" {
-			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		} else {
-			io.WriteString(w, "ok")
-		}
-
-		return nil
+		return controlHandlerResponse(w, r)
 	})
 }
 
