@@ -28,7 +28,8 @@ es.onmessage = msg => {
 		item.classList.add('active');
 
 		if (location.hash === '#current') {
-			item.scrollIntoView({
+			const scrollTo = item.previousElementSibling || item;
+			scrollTo.scrollIntoView({
 				block: 'start',
 				inline: 'start',
 				behavior: 'smooth',
