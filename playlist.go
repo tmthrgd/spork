@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
-	"unsafe"
 
 	"github.com/tmthrgd/spork/internal/dbus"
 	"golang.org/x/sync/errgroup"
@@ -51,7 +49,6 @@ func (e playlistEntry) Length() string {
 }
 
 func playlistHandler() http.HandlerFunc {
-	log.Println(unsafe.Sizeof(playlistEntry{}))
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
