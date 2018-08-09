@@ -57,7 +57,12 @@ func controlHandler(fn func(context.Context) error) http.HandlerFunc {
 			return err
 		}
 
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		if r.Header.Get("Origin") == "" {
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		} else {
+			io.WriteString(w, "ok")
+		}
+
 		return nil
 	})
 }
