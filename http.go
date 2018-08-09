@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -102,5 +103,15 @@ func undoGetHead(next http.Handler) http.Handler {
 // newTemplate parses source and returns a new html/template.Template. It
 // panics if source is invalid.
 func newTemplate(source string) *template.Template {
-	return template.Must(template.New("").Parse(source))
+	return template.Must(template.New("").Funcs(templateFuncs).Parse(source))
+}
+
+var templateFuncs = template.FuncMap{
+	"FormatLength": formatLength,
+}
+
+// formatLength formats a given song length in seconds into a display friendly
+// minute:seconds format.
+func formatLength(length int32) string {
+	return fmt.Sprintf("%d:%02d", length/60, length%60)
 }

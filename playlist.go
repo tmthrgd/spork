@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/tmthrgd/spork/internal/dbus"
@@ -19,12 +18,12 @@ var playlistTmpl = newTemplate(`<!doctype html>
 {{- range $idx, $entry := .Entries}}
 <li{{if eq $idx $.Active}} class="active" id="current"{{end}}>
 <details>
-<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{.Length}})</summary>
+<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{FormatLength .Length}})</summary>
 {{if .Name -}}  <p>Title:  {{.Name}}</p>{{end}}
 {{if .Artist -}}<p>Artist: {{.Artist}}</p>{{end}}
 {{if .Album -}} <p>Album:  {{.Album}}</p>{{end}}
 {{if .Year -}}  <p>Year:   {{.Year}}</p>{{end}}
-<p>Length: {{.Length}}</p>
+<p>Length: {{FormatLength .Length}}</p>
 </details>
 </li>
 {{- end}}
@@ -40,11 +39,7 @@ type playlistData struct {
 
 type playlistEntry struct {
 	Title, Name, Artist, Album string
-	length, Year               int32
-}
-
-func (e playlistEntry) Length() string {
-	return fmt.Sprintf("%d:%02d", e.length/60, e.length%60)
+	Length, Year               int32
 }
 
 func playlistHandler() http.HandlerFunc {
