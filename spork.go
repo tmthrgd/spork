@@ -108,7 +108,7 @@ func main() {
 	<-term
 
 	// gracefull shutdown
-	sctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	sctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
 	go func() {
