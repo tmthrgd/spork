@@ -118,3 +118,15 @@ func ToggleRepeat(ctx context.Context) error {
 func ToggleShuffle(ctx context.Context) error {
 	return audObj.CallWithContext(ctx, "org.atheme.audacious.ToggleShuffle", 0).Err
 }
+
+// GetRepeat toggles the value of the repeat button.
+func GetRepeat(ctx context.Context) (repeat bool, err error) {
+	return repeat, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.Repeat", 0).Store(&repeat)
+}
+
+// GetShuffle toggles the value of the shuffle button.
+func GetShuffle(ctx context.Context) (shuffle bool, err error) {
+	return shuffle, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.Shuffle", 0).Store(&shuffle)
+}

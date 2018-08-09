@@ -18,8 +18,8 @@ var controlTmpl = newTemplate(`<!doctype html>
 <a href=/controls/playpause title=Play/Pause>⏯</a>
 <a href=/controls/next title=Next>⏭</a>
 &nbsp;
-<a href=/controls/repeat title=Repeat>🔁</a>
-<a href=/controls/shuffle title=Shuffle>🔀</a>
+<a href=/controls/repeat title=Repeat {{- if .Repeat}} class="active"{{end}}>🔁</a>
+<a href=/controls/shuffle title=Shuffle {{- if .Shuffle}} class="active"{{end}}>🔀</a>
 <br>
 <input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
 <p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>
@@ -53,10 +53,21 @@ func controlsHandler() http.HandlerFunc {
 			return err
 		}
 
+		shuffle, err := dbus.GetShuffle(ctx)
+		if err != nil {
+			return err
+		}
+
+		repeat, err := dbus.GetRepeat(ctx)
+		if err != nil {
+			return err
+		}
+
 		return templateExecute(w, controlTmpl, &struct {
-			Volume int32
-			Title  string
-			Length int32
-		}{volume, title, length})
+			Volume          int32
+			Title           string
+			Length          int32
+			Shuffle, Repeat bool
+		}{volume, title, length, shuffle, repeat})
 	})
 }

@@ -36,6 +36,11 @@ h1, h2, h3 {
 	text-align: center;
 }
 
+.page-controls .controls .active {
+	border-top: 2px solid chocolate;
+	padding-top: 1px;
+}
+
 .page-controls .song {
 	margin-top: 0;
 }
