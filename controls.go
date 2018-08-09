@@ -16,7 +16,7 @@ var controlTmpl = newTemplate(`<!doctype html>
 <a href=/controls/prev>⏮</a> <a href=/controls/stop>⏹</a> <a href=/controls/playpause>⏯</a> <a href=/controls/next>⏭</a><br>
 <input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
 <p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>
-<span class=error></span>
+<p class=error></p>
 </div>
 <a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
 <script defer src=/assets/fetch-helpers.js></script>
