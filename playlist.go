@@ -116,10 +116,6 @@ func playlistHandler() http.HandlerFunc {
 			Name    string
 			Entries []playlistEntry
 			Active  uint32
-		}{
-			Name:    name,
-			Entries: playlist,
-			Active:  active,
-		})
+		}{name, playlist, active})
 	})
 }
