@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"os"
 	"reflect"
 
 	"github.com/go-chi/chi"
@@ -114,4 +115,20 @@ var templateFuncs = template.FuncMap{
 // minute:seconds format.
 func formatLength(length int32) string {
 	return fmt.Sprintf("%d:%02d", length/60, length%60)
+}
+
+type noDirFileSystem struct{ http.FileSystem }
+
+func (fs *noDirFileSystem) Open(name string) (http.File, error) {
+	f, err := fs.FileSystem.Open(name)
+	if err != nil {
+		return nil, err
+	}
+
+	if stat, err := f.Stat(); err == nil && stat.IsDir() {
+		f.Close()
+		return nil, os.ErrNotExist
+	}
+
+	return f, nil
 }

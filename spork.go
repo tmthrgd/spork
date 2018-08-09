@@ -60,7 +60,7 @@ func main() {
 		r.Get("/favicon.ico", handlers.ServeString("favicon.png", now, favicon).ServeHTTP)
 		r.Get("/robots.txt", handlers.ServeString("robots.txt", now, robots).ServeHTTP)
 
-		r.Mount("/assets", http.StripPrefix("/assets", http.FileServer(assets.FileSystem)))
+		r.Mount("/assets", http.StripPrefix("/assets", http.FileServer(&noDirFileSystem{assets.FileSystem})))
 	})
 
 	// HTML page routes
