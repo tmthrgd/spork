@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"sync/atomic"
@@ -12,23 +13,63 @@ import (
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
+type updateJSON struct {
+	Position uint32 `json:"pos"`
+	Title    string `json:"title,omitempty"`
+	Length   int32  `json:"length,omitempty"`
+}
+
+func (u *updateJSON) fill(ctx context.Context) error {
+	var (
+		data updateJSON
+		err  error
+	)
+
+	if data.Position, err = dbus.GetPlaylistPosition(ctx); err != nil {
+		return err
+	}
+
+	if data.Title, err = dbus.GetSongTitle(ctx, data.Position); err != nil {
+		return err
+	}
+
+	if data.Length, err = dbus.GetSongLength(ctx, data.Position); err != nil {
+		return err
+	}
+
+	*u = data
+	return nil
+}
+
+func (u *updateJSON) marshal() []byte {
+	data, err := json.Marshal(u)
+	if err != nil {
+		panic("spork: unable to marshal *updateJSON: " + err.Error())
+	}
+
+	return data
+}
+
 func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
-	type positionUpdate struct {
-		pos uint32
+	type updateData struct {
+		pos  uint32
+		data []byte
 
 		nextCh chan struct{}
-		next   *positionUpdate
+		next   *updateData
 	}
-	var update atomic.Value // *positionUpdate
+	var update atomic.Value // *updateData
 
 	go func() {
-		pos, err := dbus.GetPlaylistPosition(ctx)
-		if err != nil && !dbus.IsUnknownServiceError(err) {
+		var data updateJSON
+
+		if err := data.fill(ctx); err != nil && !dbus.IsUnknownServiceError(err) {
 			log.Printf("spork: playlist update poller error: %v", err)
 		}
 
-		old := &positionUpdate{
-			pos: pos,
+		old := &updateData{
+			pos:  data.Position,
+			data: data.marshal(),
 
 			nextCh: make(chan struct{}),
 		}
@@ -44,19 +85,19 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 				return
 			}
 
-			pos, err := dbus.GetPlaylistPosition(ctx)
-			if err != nil {
+			if err := data.fill(ctx); err != nil {
 				if !dbus.IsUnknownServiceError(err) {
 					log.Printf("spork: playlist update poller error: %v", err)
 				}
 
 				continue
-			} else if pos == old.pos {
+			} else if data.Position == old.pos {
 				continue
 			}
 
-			next := &positionUpdate{
-				pos: pos,
+			next := &updateData{
+				pos:  data.Position,
+				data: data.marshal(),
 
 				nextCh: make(chan struct{}),
 			}
@@ -83,7 +124,7 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		f.Flush()
 
-		update := update.Load().(*positionUpdate)
+		update := update.Load().(*updateData)
 
 		for {
 			select {
@@ -95,7 +136,9 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 				return nil
 			}
 
-			fmt.Fprintf(w, "data: {\"pos\":%d}\n\n", update.pos)
+			io.WriteString(w, "data: ")
+			w.Write(update.data)
+			io.WriteString(w, "\n\n")
 			f.Flush()
 		}
 	})
