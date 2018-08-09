@@ -111,6 +111,13 @@ func main() {
 	sctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
+	go func() {
+		<-term
+		signal.Stop(term)
+
+		cancel()
+	}()
+
 	close(shutdown)
 
 	if err := srv.Shutdown(sctx); err != nil {
