@@ -31,17 +31,6 @@ var playlistTmpl = newTemplate(`<!doctype html>
 <script defer src=/assets/fetch-helpers.js></script>
 <script defer src=/assets/playlist.js></script>`)
 
-type playlistData struct {
-	Name    string
-	Entries []playlistEntry
-	Active  uint32
-}
-
-type playlistEntry struct {
-	Title, Name, Artist, Album string
-	Length, Year               int32
-}
-
 func playlistHandler() http.HandlerFunc {
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
@@ -51,6 +40,10 @@ func playlistHandler() http.HandlerFunc {
 			return err
 		}
 
+		type playlistEntry struct {
+			Title, Name, Artist, Album string
+			Length, Year               int32
+		}
 		playlist := make([]playlistEntry, entries)
 
 		g, gctx := errgroup.WithContext(ctx)
@@ -119,7 +112,11 @@ func playlistHandler() http.HandlerFunc {
 			return err
 		}
 
-		return templateExecute(w, playlistTmpl, &playlistData{
+		return templateExecute(w, playlistTmpl, &struct {
+			Name    string
+			Entries []playlistEntry
+			Active  uint32
+		}{
 			Name:    name,
 			Entries: playlist,
 			Active:  active,
