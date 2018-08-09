@@ -26,6 +26,8 @@ const (
 	robots  = "User-agent: *\nDisallow: /"
 )
 
+var shutdown = make(chan struct{})
+
 func main() {
 	runtime.SetBlockProfileRate(5)
 	runtime.SetMutexProfileFraction(5)
@@ -36,6 +38,9 @@ func main() {
 	if err := dbus.BusConnect(); err != nil {
 		log.Fatal(err)
 	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	router := chi.NewRouter()
 	router.Use(
@@ -79,6 +84,7 @@ func main() {
 		r.Get("/controls/prev", prevHandler())
 		r.Get("/controls/next", nextHandler())
 		r.Get("/controls/volume/{vol}", setVolumeHandler())
+		r.Get("/playlist/updates", playlistUpdateHandler(ctx))
 	})
 
 	fmt.Printf("Listening on %s\n", *addr)
@@ -100,10 +106,12 @@ func main() {
 	<-term
 
 	// gracefull shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	sctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
-	if err := srv.Shutdown(ctx); err != nil {
+	close(shutdown)
+
+	if err := srv.Shutdown(sctx); err != nil {
 		log.Printf("error shutting down: %v", err)
 	}
 }
