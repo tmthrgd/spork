@@ -21,7 +21,7 @@ const es = new EventSource('/playlist/updates');
 es.onmessage = msg => {
 	const {title, length} = JSON.parse(msg.data);
 	if (title) {
-		song.textContent = `${title} (${(length/60)|0}:${('0'+((length%60)|0)).slice(-2)})`;
+		song.textContent = `${title} (${(length/60)|0}:${('0'+(length%60)).slice(-2)})`;
 	}
 };
 
