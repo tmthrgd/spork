@@ -75,3 +75,5 @@ func playPauseHandler() http.HandlerFunc { return controlHandler(dbus.PlayPause)
 func stopHandler() http.HandlerFunc      { return controlHandler(dbus.Stop) }
 func prevHandler() http.HandlerFunc      { return controlHandler(dbus.Reverse) }
 func nextHandler() http.HandlerFunc      { return controlHandler(dbus.Advance) }
+func repeatHandler() http.HandlerFunc    { return controlHandler(dbus.ToggleRepeat) }
+func shuffleHandler() http.HandlerFunc   { return controlHandler(dbus.ToggleShuffle) }

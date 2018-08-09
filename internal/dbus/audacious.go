@@ -108,3 +108,13 @@ func Advance(ctx context.Context) error {
 func Reverse(ctx context.Context) error {
 	return audObj.CallWithContext(ctx, "org.atheme.audacious.Reverse", 0).Err
 }
+
+// ToggleRepeat toggles the value of the repeat button.
+func ToggleRepeat(ctx context.Context) error {
+	return audObj.CallWithContext(ctx, "org.atheme.audacious.ToggleRepeat", 0).Err
+}
+
+// ToggleShuffle toggles the value of the shuffle button.
+func ToggleShuffle(ctx context.Context) error {
+	return audObj.CallWithContext(ctx, "org.atheme.audacious.ToggleShuffle", 0).Err
+}

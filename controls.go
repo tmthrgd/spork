@@ -16,7 +16,11 @@ var controlTmpl = newTemplate(`<!doctype html>
 <a href=/controls/prev title=Previous>⏮</a>
 <a href=/controls/stop title=Stop>⏹</a>
 <a href=/controls/playpause title=Play/Pause>⏯</a>
-<a href=/controls/next title=Next>⏭</a><br>
+<a href=/controls/next title=Next>⏭</a>
+&nbsp;
+<a href=/controls/repeat title=Repeat>🔁</a>
+<a href=/controls/shuffle title=Shuffle>🔀</a>
+<br>
 <input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
 <p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>
 <p class=error></p>

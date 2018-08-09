@@ -83,6 +83,8 @@ func main() {
 		r.Get("/controls/stop", stopHandler())
 		r.Get("/controls/prev", prevHandler())
 		r.Get("/controls/next", nextHandler())
+		r.Get("/controls/repeat", repeatHandler())
+		r.Get("/controls/shuffle", shuffleHandler())
 		r.Get("/controls/volume/{vol}", setVolumeHandler())
 		r.Get("/playlist/updates", playlistUpdateHandler(ctx))
 	})
