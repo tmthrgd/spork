@@ -15,21 +15,21 @@ import (
 const error404 = `<!doctype html>
 <meta charset=utf-8>
 <title>404 Not Found</title>
-<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
+<link rel=stylesheet href=/assets/style.css>
 <h1>404 Not Found</h1>
 <p>The requested file was not found.</p>`
 
 var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
 <meta charset=utf-8>
 <title>500 Internal Server Error</title>
-<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
+<link rel=stylesheet href=/assets/style.css>
 <h1>500 Internal Server Error</h1>
 <p>{{.Type}}: {{- if .Name}} {{.Name}}: {{- end}} {{.Message}}</p>`))
 
 const error502NoAudacious = `<!doctype html>
 <meta charset=utf-8>
 <title>502 Bad Gateway</title>
-<style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
+<link rel=stylesheet href=/assets/style.css>
 <h1>502 Bad Gateway</h1>
 <p>The Audacious Media Player is not currently running. Please start Audacious and try again.</p>`
 
