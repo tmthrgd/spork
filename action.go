@@ -12,6 +12,16 @@ import (
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
+func actionHandlerResponse(w http.ResponseWriter, r *http.Request, redirect string) error {
+	if httputils.Negotiate(r.Header, "Accept", "text/html", "text/plain") == "text/plain" {
+		io.WriteString(w, "ok")
+	} else {
+		http.Redirect(w, r, redirect, http.StatusTemporaryRedirect)
+	}
+
+	return nil
+}
+
 func jumpHandler() http.HandlerFunc {
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
@@ -29,19 +39,8 @@ func jumpHandler() http.HandlerFunc {
 			return err
 		}
 
-		http.Redirect(w, r, "/playlist#current", http.StatusTemporaryRedirect)
-		return nil
+		return actionHandlerResponse(w, r, "/playlist#current")
 	})
-}
-
-func controlHandlerResponse(w http.ResponseWriter, r *http.Request) error {
-	if httputils.Negotiate(r.Header, "Accept", "text/html", "text/plain") == "text/plain" {
-		io.WriteString(w, "ok")
-	} else {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-	}
-
-	return nil
 }
 
 func setVolumeHandler() http.HandlerFunc {
@@ -57,7 +56,7 @@ func setVolumeHandler() http.HandlerFunc {
 			return err
 		}
 
-		return controlHandlerResponse(w, r)
+		return actionHandlerResponse(w, r, "/")
 	})
 }
 
@@ -67,7 +66,7 @@ func controlHandler(fn func(context.Context) error) http.HandlerFunc {
 			return err
 		}
 
-		return controlHandlerResponse(w, r)
+		return actionHandlerResponse(w, r, "/")
 	})
 }
 
