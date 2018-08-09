@@ -28,6 +28,6 @@ func controlsHandler() http.HandlerFunc {
 			return err
 		}
 
-		return templateExecute(w, controlTmpl, struct{ Volume int32 }{volume})
+		return templateExecute(w, controlTmpl, &struct{ Volume int32 }{volume})
 	})
 }
