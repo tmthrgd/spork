@@ -17,7 +17,7 @@ var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 <h1>{{.Name}}</h1>
 <ol>
 {{- range $idx, $entry := .Entries}}
-<li{{if eq $idx $.Active}} class="active" id="current"{{end}}><a href="/jump/{{$idx}}">{{.Title}}</a> – {{.Length}}</li>
+<li{{if eq $idx $.Active}} class="active" id="current"{{end}}><a href="/jump/{{$idx}}">{{.Title}}</a> ({{.Length}})</li>
 {{- end}}
 </ol>`))
 
