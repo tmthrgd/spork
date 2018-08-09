@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
+	"unsafe"
 
 	"github.com/tmthrgd/spork/internal/dbus"
 	"golang.org/x/sync/errgroup"
@@ -17,7 +19,16 @@ var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 <h1>{{.Name}}</h1>
 <ol>
 {{- range $idx, $entry := .Entries}}
-<li{{if eq $idx $.Active}} class="active" id="current"{{end}}><a href="/jump/{{$idx}}">{{.Title}}</a> ({{.Length}})</li>
+<li{{if eq $idx $.Active}} class="active" id="current"{{end}}>
+<details>
+<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{.Length}})</summary>
+{{if .Name -}}  <p>Title:  {{.Name}}</p>{{end}}
+{{if .Artist -}}<p>Artist: {{.Artist}}</p>{{end}}
+{{if .Album -}} <p>Album:  {{.Album}}</p>{{end}}
+{{if .Year -}}  <p>Year:   {{.Year}}</p>{{end}}
+<p>Length: {{.Length}}</p>
+</details>
+</li>
 {{- end}}
 </ol>`))
 
@@ -28,8 +39,8 @@ type playlistData struct {
 }
 
 type playlistEntry struct {
-	Title  string
-	length int32
+	Title, Name, Artist, Album string
+	length, Year               int32
 }
 
 func (e playlistEntry) Length() string {
@@ -37,6 +48,7 @@ func (e playlistEntry) Length() string {
 }
 
 func playlistHandler() http.HandlerFunc {
+	log.Println(unsafe.Sizeof(playlistEntry{}))
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
@@ -71,7 +83,30 @@ func playlistHandler() http.HandlerFunc {
 					return err
 				}
 
-				playlist[entry] = playlistEntry{title, length}
+				name, err := dbus.GetSongName(gctx, entry)
+				if err != nil {
+					return err
+				}
+
+				artist, err := dbus.GetSongArtist(gctx, entry)
+				if err != nil {
+					return err
+				}
+
+				album, err := dbus.GetSongAlbum(gctx, entry)
+				if err != nil {
+					return err
+				}
+
+				year, err := dbus.GetSongYear(gctx, entry)
+				if err != nil {
+					return err
+				}
+
+				playlist[entry] = playlistEntry{
+					title, name, artist, album,
+					length, year,
+				}
 				return nil
 			})
 		}

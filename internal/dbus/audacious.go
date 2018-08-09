@@ -1,6 +1,10 @@
 package dbus
 
-import "context"
+import (
+	"context"
+
+	"github.com/godbus/dbus"
+)
 
 // GetPlaylistLength returns the number of songs in the active playlist.
 func GetPlaylistLength(ctx context.Context) (length int32, err error) {
@@ -8,7 +12,7 @@ func GetPlaylistLength(ctx context.Context) (length int32, err error) {
 		"org.atheme.audacious.Length", 0).Store(&length)
 }
 
-// GetSongTitle returns the title of the given song in the active playlist.
+// GetSongTitle returns the formatted title of the given song in the active playlist.
 func GetSongTitle(ctx context.Context, entry uint32) (title string, err error) {
 	return title, audObj.CallWithContext(ctx,
 		"org.atheme.audacious.SongTitle", 0, entry).Store(&title)
@@ -18,6 +22,35 @@ func GetSongTitle(ctx context.Context, entry uint32) (title string, err error) {
 func GetSongLength(ctx context.Context, entry uint32) (length int32, err error) {
 	return length, audObj.CallWithContext(ctx,
 		"org.atheme.audacious.SongLength", 0, entry).Store(&length)
+}
+
+// GetSongName returns the unformatted title of the given song in the active playlist.
+func GetSongName(ctx context.Context, entry uint32) (title string, err error) {
+	return title, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.SongTuple", 0, entry, "title").Store(&title)
+}
+
+// GetSongArtist returns the artist of the given song in the active playlist.
+func GetSongArtist(ctx context.Context, entry uint32) (artist string, err error) {
+	return artist, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.SongTuple", 0, entry, "artist").Store(&artist)
+}
+
+// GetSongAlbum returns the album of the given song in the active playlist.
+func GetSongAlbum(ctx context.Context, entry uint32) (album string, err error) {
+	return album, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.SongTuple", 0, entry, "album").Store(&album)
+}
+
+// GetSongYear returns the year of the given song in the active playlist.
+func GetSongYear(ctx context.Context, entry uint32) (year int32, err error) {
+	// Audacious may return a D-Bus string when a year is missing, so
+	// cast manually here.
+	var yearVar dbus.Variant
+	err = audObj.CallWithContext(ctx,
+		"org.atheme.audacious.SongTuple", 0, entry, "year").Store(&yearVar)
+	year, _ = yearVar.Value().(int32)
+	return year, err
 }
 
 // GetPlaylistPosition returns the currently selected song in the active playlist.
