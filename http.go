@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"reflect"
 
 	"github.com/go-chi/chi"
 	"github.com/godbus/dbus"
@@ -23,7 +24,7 @@ var error500 = template.Must(template.New("error500").Parse(`<!doctype html>
 <title>500 Internal Server Error</title>
 <style>body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}</style>
 <h1>500 Internal Server Error</h1>
-<p>{{.}}</p>`))
+<p>{{.Type}}: {{- if .Name}} {{.Name}}: {{- end}} {{.Message}}</p>`))
 
 const error502NoAudacious = `<!doctype html>
 <meta charset=utf-8>
@@ -59,7 +60,13 @@ func errorHandler(handler func(http.ResponseWriter, *http.Request) error) http.H
 
 		w.WriteHeader(http.StatusInternalServerError)
 
-		error500.Execute(w, err.Error())
+		error500.Execute(w, &struct {
+			Type, Name, Message string
+		}{
+			reflect.ValueOf(err).Type().String(),
+			derr.Name,
+			err.Error(),
+		})
 	}
 }
 
