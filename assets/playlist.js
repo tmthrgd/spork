@@ -1,4 +1,15 @@
-const items = document.querySelectorAll('.playlist li');
+const playlist = document.querySelector('.playlist');
+
+playlist.addEventListener('click', e => {
+	if (!(e.target instanceof HTMLAnchorElement)) {
+		return;
+	}
+
+	e.preventDefault();
+	fetch(e.target.href, {headers}).then(fetchThen, fetchCatch);
+}, false);
+
+const items = playlist.getElementsByTagName('li');
 
 const es = new EventSource('/playlist/updates');
 

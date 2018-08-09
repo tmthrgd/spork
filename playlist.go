@@ -17,6 +17,7 @@ var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 <link rel=stylesheet href=/assets/style.css>
 <body class=page-playlist>
 <h1>{{.Name}}</h1>
+<p class=error></p>
 <ol class=playlist>
 {{- range $idx, $entry := .Entries}}
 <li{{if eq $idx $.Active}} class="active" id="current"{{end}}>
@@ -31,6 +32,7 @@ var playlistTmpl = template.Must(template.New("playlist").Parse(`<!doctype html>
 </li>
 {{- end}}
 </ol>
+<script defer src=/assets/fetch-helpers.js></script>
 <script defer src=/assets/playlist.js></script>`))
 
 type playlistData struct {

@@ -19,6 +19,7 @@ var controlTmpl = template.Must(template.New("control").Parse(`<!doctype html>
 <span class=error></span>
 </div>
 <a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
+<script defer src=/assets/fetch-helpers.js></script>
 <script defer src=/assets/controls.js></script>`))
 
 func controlsHandler() http.HandlerFunc {
