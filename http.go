@@ -16,21 +16,21 @@ import (
 
 const error404 = `<!doctype html>
 <meta charset=utf-8>
-<title>404 Not Found</title>
+<title>404 Not Found – Spork</title>
 <link rel=stylesheet href=/assets/style.css>
 <h1>404 Not Found</h1>
 <p>The requested file was not found.</p>`
 
 var error500 = newTemplate(`<!doctype html>
 <meta charset=utf-8>
-<title>500 Internal Server Error</title>
+<title>500 Internal Server Error – Spork</title>
 <link rel=stylesheet href=/assets/style.css>
 <h1>500 Internal Server Error</h1>
 <p>{{.Type}}: {{- if .Name}} {{.Name}}: {{- end}} {{.Message}}</p>`)
 
 const error502NoAudacious = `<!doctype html>
 <meta charset=utf-8>
-<title>502 Bad Gateway</title>
+<title>502 Bad Gateway – Spork</title>
 <link rel=stylesheet href=/assets/style.css>
 <h1>502 Bad Gateway</h1>
 <p>The Audacious Media Player is not currently running. Please start Audacious and try again.</p>`

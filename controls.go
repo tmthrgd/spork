@@ -8,10 +8,10 @@ import (
 
 var controlTmpl = newTemplate(`<!doctype html>
 <meta charset=utf-8>
-<title>Play Controls</title>
+<title>Audacious Control Panel – Spork</title>
 <link rel=stylesheet href=/assets/style.css>
 <body class=page-controls>
-<h1>Play Controls</h1>
+<h1>Audacious Control Panel</h1>
 <div class=controls>
 <a href=/controls/prev title=Previous>⏮</a>
 <a href=/controls/stop title=Stop>⏹</a>

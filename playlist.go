@@ -9,7 +9,7 @@ import (
 
 var playlistTmpl = newTemplate(`<!doctype html>
 <meta charset=utf-8>
-<title>{{.Name}}</title>
+<title>{{.Name}} – Spork</title>
 <link rel=stylesheet href=/assets/style.css>
 <body class=page-playlist>
 <h1>{{.Name}}</h1>
