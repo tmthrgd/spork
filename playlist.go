@@ -16,7 +16,7 @@ var playlistTmpl = newTemplate(`<!doctype html>
 <p class=error></p>
 <ol class=playlist>
 {{- range $idx, $entry := .Entries}}
-<li{{if eq $idx $.Active}} class="active" id="current"{{end}}>
+<li{{if eq $idx $.Active}} class=active id="current"{{end}}>
 <details>
 <summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{FormatLength .Length}})</summary>
 {{if .Name -}}  <p>Title:  {{.Name}}</p>{{end}}
