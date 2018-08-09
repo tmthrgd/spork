@@ -8,8 +8,8 @@ import (
 	"reflect"
 
 	"github.com/go-chi/chi"
-	"github.com/godbus/dbus"
 	"github.com/tmthrgd/httphandlers"
+	"github.com/tmthrgd/spork/internal/dbus"
 )
 
 const error404 = `<!doctype html>
@@ -50,8 +50,7 @@ func errorHandler(handler func(http.ResponseWriter, *http.Request) error) http.H
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		derr, ok := err.(dbus.Error)
-		if ok && derr.Name == "org.freedesktop.DBus.Error.ServiceUnknown" {
+		if dbus.IsUnknownServiceError(err) {
 			w.WriteHeader(http.StatusBadGateway)
 
 			io.WriteString(w, error502NoAudacious)
@@ -60,6 +59,7 @@ func errorHandler(handler func(http.ResponseWriter, *http.Request) error) http.H
 
 		w.WriteHeader(http.StatusInternalServerError)
 
+		derr, _ := err.(dbus.Error)
 		error500.Execute(w, &struct {
 			Type, Name, Message string
 		}{
