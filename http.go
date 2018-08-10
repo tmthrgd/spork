@@ -33,7 +33,7 @@ const error502NoAudacious = `<!doctype html>
 <title>502 Bad Gateway – Spork</title>
 <link rel=stylesheet href=/assets/style.css>
 <h1>502 Bad Gateway</h1>
-<p>The Audacious Media Player is not currently running. Please start Audacious and try again.</p>`
+<p>The Audacious Media Player is not currently running. Please <a href=/launch>launch Audacious</a> and try again.</p>`
 
 // notFoundHandler returns a handler that serves a 404 error page.
 func notFoundHandler() http.HandlerFunc {

@@ -87,6 +87,7 @@ func main() {
 		r.Get("/controls/shuffle", shuffleHandler())
 		r.Get("/controls/volume/{vol}", setVolumeHandler())
 		r.Get("/playlist/updates", playlistUpdateHandler(ctx))
+		r.Get("/launch", launchHandler())
 	})
 
 	fmt.Printf("Listening on %s\n", *addr)
