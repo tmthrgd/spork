@@ -4,10 +4,22 @@ import (
 	"net/http"
 	"os/exec"
 	"syscall"
+
+	"github.com/tmthrgd/spork/internal/dbus"
 )
 
 func launchHandler() http.HandlerFunc {
+	redirect := func(w http.ResponseWriter, r *http.Request) error {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return nil
+	}
+
 	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+		if _, err := dbus.GetVolume(r.Context()); err == nil {
+			// Audacious is already running.
+			return redirect(w, r)
+		}
+
 		cmd := exec.Command("audacious")
 		cmd.SysProcAttr = &syscall.SysProcAttr{
 			// Setpgid causes audacious to have a different process group and
@@ -19,7 +31,6 @@ func launchHandler() http.HandlerFunc {
 			return err
 		}
 
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return nil
+		return redirect(w, r)
 	})
 }
