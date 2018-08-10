@@ -1,3 +1,4 @@
+// Package dbus implements a D-Bus interface to Audacious.
 package dbus
 
 import "github.com/godbus/dbus"
@@ -5,16 +6,19 @@ import "github.com/godbus/dbus"
 // Error represents a D-Bus message of type Error.
 type Error = dbus.Error
 
-var audObj dbus.BusObject
+var (
+	conn   *dbus.Conn
+	audObj dbus.BusObject
+)
 
 // BusConnect starts the dbus connection, it should only be called once.
 func BusConnect() error {
-	if audObj != nil {
+	if conn != nil {
 		panic("spork/internal/dbus: BusConnect called multiple times")
 	}
 
-	conn, err := dbus.SessionBus()
-	if err != nil {
+	var err error
+	if conn, err = dbus.SessionBus(); err != nil {
 		return err
 	}
 
