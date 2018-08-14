@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/tmthrgd/httphandlers"
+	"github.com/tmthrgd/spork/internal/assets"
 	"github.com/tmthrgd/spork/internal/dbus"
 )
 
@@ -38,6 +39,11 @@ const error502NoAudacious = `<!doctype html>
 // notFoundHandler returns a handler that serves a 404 error page.
 func notFoundHandler() http.HandlerFunc {
 	return handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP
+}
+
+// assetsHandler returns a handler that serves site assets.
+func assetsHandler() http.Handler {
+	return http.StripPrefix("/assets", http.FileServer(&noDirFileSystem{assets.FileSystem}))
 }
 
 // errorHandler converts a handler with an error return to a http.HandlerFunc,
