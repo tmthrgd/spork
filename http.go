@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/tmthrgd/httphandlers"
@@ -36,9 +37,23 @@ const error502NoAudacious = `<!doctype html>
 <h1>502 Bad Gateway</h1>
 <p>The Audacious Media Player is not currently running. Please <a href=/launch>launch Audacious</a> and try again.</p>`
 
+const favicon = "\x00\x00\x01\x00\x01\x00\x10\x10\x02\x00\x00\x00\x00\x00\xb0\x00\x00\x00\x16\x00\x00\x00(\x00\x00\x00\x10\x00\x00\x00 \x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00!\xcb\xff\x00\x00\x00\x00\x00\xdf;\x00\x00\xde;\x00\x00\xdc;\x00\x00\xdc;\x00\x00\xdc;\x00\x00\xdc;\x00\x00\xdc1\x00\x00\x8c \x00\x00\x06 \x00\x00W \x00\x00W \x00\x00W \x00\x00W1\x00\x00\xff?\x00\x00\xff?\x00\x00\xff?\x00\x00\xdf;\x00\x00\xde;\x00\x00\xdc;\x00\x00\xdc;\x00\x00\xdc;\x00\x00\xdc;\x00\x00\xdc1\x00\x00\x8c \x00\x00\x06 \x00\x00W \x00\x00W \x00\x00W \x00\x00W1\x00\x00\xff?\x00\x00\xff?\x00\x00\xff?\x00\x00"
+
+const robots = "User-agent: *\nDisallow: /"
+
 // notFoundHandler returns a handler that serves a 404 error page.
 func notFoundHandler() http.HandlerFunc {
 	return handlers.ServeError(http.StatusNotFound, []byte(error404), "text/html; charset=utf-8").ServeHTTP
+}
+
+// faviconHandler returns a handler that serves the favicon.ico file.
+func faviconHandler() http.HandlerFunc {
+	return handlers.ServeString("favicon.ico", time.Now(), favicon).ServeHTTP
+}
+
+// robotsHandler returns a handler that serves the robots.txt file.
+func robotsHandler() http.HandlerFunc {
+	return handlers.ServeString("robots.txt", time.Now(), robots).ServeHTTP
 }
 
 // assetsHandler returns a handler that serves site assets.
