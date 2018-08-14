@@ -28,6 +28,10 @@ const (
 
 var shutdown = make(chan struct{})
 
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
+
 func main() {
 	runtime.SetBlockProfileRate(5)
 	runtime.SetMutexProfileFraction(5)
