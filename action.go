@@ -82,7 +82,6 @@ func controlHandler(fn func(context.Context) error, statusFn func(context.Contex
 	})
 }
 
-func playHandler() http.HandlerFunc      { return controlHandler(dbus.Play, nil) }
 func playPauseHandler() http.HandlerFunc { return controlHandler(dbus.PlayPause, nil) }
 func stopHandler() http.HandlerFunc      { return controlHandler(dbus.Stop, nil) }
 func prevHandler() http.HandlerFunc      { return controlHandler(dbus.Reverse, nil) }
