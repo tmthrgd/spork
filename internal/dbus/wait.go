@@ -25,8 +25,8 @@ func WaitForAudacious() (waitStarted func(), isRunning func() bool, err error) {
 	conn.Signal(ch)
 
 	go func() {
-		var name, oldOwner, newOwner string
 		for sig := range ch {
+			var name, oldOwner, newOwner string
 			if sig.Name != "org.freedesktop.DBus.NameOwnerChanged" ||
 				dbus.Store(sig.Body, &name, &oldOwner, &newOwner) != nil ||
 				name != "org.atheme.audacious" {
