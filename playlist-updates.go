@@ -118,7 +118,6 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 
 		hdr := w.Header()
 		hdr.Set("Content-Type", "text/event-stream")
-		hdr.Set("Cache-Control", "no-cache")
 		hdr.Set("Connection", "keep-alive")
 
 		w.WriteHeader(http.StatusOK)
