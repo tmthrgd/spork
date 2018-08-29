@@ -13,7 +13,11 @@ const items = playlist.getElementsByTagName('li');
 
 const es = new EventSource('/playlist/updates');
 
+es.onopen = clearError;
+
 es.onmessage = msg => {
+	clearError();
+
 	const {pos} = JSON.parse(msg.data);
 
 	const old = document.querySelector('.playlist .active');
@@ -38,6 +42,4 @@ es.onmessage = msg => {
 	}
 };
 
-es.onerror = e => {
-	console.error(e);
-};
+es.onerror = eventSourceError;

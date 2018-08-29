@@ -29,13 +29,15 @@ const song = document.querySelector('.song');
 
 const es = new EventSource('/playlist/updates');
 
+es.onopen = clearError;
+
 es.onmessage = msg => {
+	clearError();
+
 	const {title, length} = JSON.parse(msg.data);
 	if (title) {
 		song.textContent = `${title} (${(length/60)|0}:${('0'+(length%60)).slice(-2)})`;
 	}
 };
 
-es.onerror = e => {
-	console.error(e);
-};
+es.onerror = eventSourceError;
