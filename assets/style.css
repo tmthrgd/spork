@@ -48,3 +48,7 @@ h1, h2, h3 {
 input[type=range]::-moz-range-track {
 	background-color: lightgrey;
 }
+
+.error {
+	color: mediumvioletred;
+}
