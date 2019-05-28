@@ -7,7 +7,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/tmthrgd/spork/internal/dbus"
+	"tmthrgd.dev/go/spork/internal/dbus"
 )
 
 func launchHandler() http.HandlerFunc {

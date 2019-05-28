@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/tmthrgd/spork/internal/dbus"
+	"tmthrgd.dev/go/spork/internal/dbus"
 )
 
 type updateJSON struct {

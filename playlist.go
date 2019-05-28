@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/tmthrgd/spork/internal/dbus"
 	"golang.org/x/sync/errgroup"
+	"tmthrgd.dev/go/spork/internal/dbus"
 )
 
 var playlistTmpl = newTemplate(`<!doctype html>
