@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/tmthrgd/httputils"
-	"tmthrgd.dev/go/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/internal/dbus"
 )
 
 func actionHandlerResponse(w http.ResponseWriter, r *http.Request, ok, redirect string) error {

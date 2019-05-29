@@ -17,7 +17,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/tmthrgd/httphandlers"
-	"tmthrgd.dev/go/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/internal/dbus"
 )
 
 var shutdown = make(chan struct{})

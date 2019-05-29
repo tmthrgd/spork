@@ -1,4 +1,4 @@
-module tmthrgd.dev/go/spork
+module go.tmthrgd.dev/spork
 
 go 1.12
 

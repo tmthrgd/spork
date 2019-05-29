@@ -5,7 +5,7 @@ A web-based audacious media player control panel.
 ## Install:
 
 ```
-go get tmthrgd.dev/go/spork
+go get go.tmthrgd.dev/spork
 ```
 
 ## Run:

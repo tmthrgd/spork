@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/tmthrgd/httphandlers"
-	"tmthrgd.dev/go/spork/internal/assets"
-	"tmthrgd.dev/go/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/internal/assets"
+	"go.tmthrgd.dev/spork/internal/dbus"
 )
 
 const error404 = `<!doctype html>

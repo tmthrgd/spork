@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"tmthrgd.dev/go/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/internal/dbus"
 )
 
 var controlTmpl = newTemplate(`<!doctype html>
