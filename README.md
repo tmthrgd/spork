@@ -1,18 +1,27 @@
 # spork
 
-A web-based audacious media player control panel.
+**spork** is a web-based audacious media player control panel.
 
-## Install:
+![Control panel](control-panel.jpg)
 
-```
+To use **spork** you'll need a working [Go](https://golang.org/)
+installation. Follow the instructions at
+[golang.org](https://golang.org/doc/install) to install it. With a working
+Go installation, **spork** can be installed by running the following on the
+command line:
+
+```bash
 go get go.tmthrgd.dev/spork
 ```
 
-## Run:
+Once installed, simply run the **spork** binary and navigate to
+<http://localhost:8080>:
 
-`spork [-port=<port>]`
+```bash
+spork [-port=<port>]
+```
 
 ## License
 
-Unless otherwise noted, the spork source files are distributed under the Modified BSD License
-found in the LICENSE file.
+Unless otherwise noted, the spork source files are distributed under the
+Modified BSD License found in the LICENSE file.
