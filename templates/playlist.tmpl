@@ -1,7 +1,13 @@
 <!doctype html>
+<html lang=en>
 <meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=0.75">
 <title>{{.Name}} – Spork</title>
+<link rel=stylesheet href="{{assetPath "/normalize.min.css"}}">
+<link rel=stylesheet href="{{assetPath "/skeleton.min.css"}}">
 <link rel=stylesheet href="{{assetPath "/playlist.css"}}">
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Raleway&amp;display=swap">
+<main class=container>
 <h1>{{.Name}}</h1>
 <p class=error></p>
 <ol class=playlist>
@@ -18,5 +24,6 @@
 </li>
 {{- end}}
 </ol>
+</main>
 <script defer src="{{assetPath "/fetch-helpers.js"}}"></script>
 <script defer src="{{assetPath "/playlist.js"}}"></script>

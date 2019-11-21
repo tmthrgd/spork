@@ -1,21 +1,13 @@
 body {
-	max-width: 650px;
+	padding: 4rem 2rem;
 
-	margin: 40px auto;
-	padding: 0 10px;
-
-	font-size: 18px;
-	line-height: 1.6;
+	font-size: 1.6em;
 
 	color: #444;
 }
 
-h1, h2, h3 {
-	line-height: 1.2;
-}
-
-.active {
-	font-weight: bold;
+ol {
+	list-style-position: outside;
 }
 
 details p {
@@ -28,8 +20,8 @@ li a {
 	color:#444;
 }
 
-input[type=range]::-moz-range-track {
-	background-color: lightgrey;
+.active {
+	font-weight: bold;
 }
 
 .error {
