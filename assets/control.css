@@ -14,34 +14,24 @@ h1, h2, h3 {
 	line-height: 1.2;
 }
 
-.page-playlist .active {
-	font-weight: bold;
-}
-
-.page-playlist details p {
-	margin: 0;
-
-	font-weight: normal;
-}
-
-.page-playlist li a, .page-controls .controls a {
+.controls a {
 	color:#444;
 }
 
-.page-controls .controls a {
+.controls a {
 	text-decoration: none;
 }
 
-.page-controls .controls {
+.controls {
 	text-align: center;
 }
 
-.page-controls .controls .active {
+.controls .active {
 	border-top: 2px solid chocolate;
 	padding-top: 1px;
 }
 
-.page-controls .song {
+.song {
 	margin-top: 0;
 }
 

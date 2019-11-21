@@ -1,0 +1,37 @@
+body {
+	max-width: 650px;
+
+	margin: 40px auto;
+	padding: 0 10px;
+
+	font-size: 18px;
+	line-height: 1.6;
+
+	color: #444;
+}
+
+h1, h2, h3 {
+	line-height: 1.2;
+}
+
+.active {
+	font-weight: bold;
+}
+
+details p {
+	margin: 0;
+
+	font-weight: normal;
+}
+
+li a {
+	color:#444;
+}
+
+input[type=range]::-moz-range-track {
+	background-color: lightgrey;
+}
+
+.error {
+	color: mediumvioletred;
+}
