@@ -1,3 +1,5 @@
+import { headers, fetchThen, fetchCatch, playlistUpdates } from './helpers.js';
+
 const playlist = document.querySelector('.playlist');
 
 playlist.addEventListener('click', e => {
@@ -6,20 +8,12 @@ playlist.addEventListener('click', e => {
 	}
 
 	e.preventDefault();
-	fetch(e.target.href, {headers}).then(fetchThen, fetchCatch);
+	fetch(e.target.href, { headers }).then(fetchThen, fetchCatch);
 }, false);
 
 const items = playlist.getElementsByTagName('li');
 
-const es = new EventSource('/playlist/updates');
-
-es.onopen = clearError;
-
-es.onmessage = msg => {
-	clearError();
-
-	const {pos} = JSON.parse(msg.data);
-
+playlistUpdates(({ pos }) => {
 	const old = document.querySelector('.playlist .active');
 	if (old) {
 		old.id = '';
@@ -27,19 +21,19 @@ es.onmessage = msg => {
 	}
 
 	const item = items[pos];
-	if (item) {
-		item.id = 'current';
-		item.classList.add('active');
-
-		if (location.hash === '#current') {
-			const scrollTo = item.previousElementSibling || item;
-			scrollTo.scrollIntoView({
-				block: 'start',
-				inline: 'start',
-				behavior: 'smooth',
-			});
-		}
+	if (!item) {
+		return;
 	}
-};
 
-es.onerror = eventSourceError;
+	item.id = 'current';
+	item.classList.add('active');
+
+	if (location.hash === '#current') {
+		const scrollTo = item.previousElementSibling || item;
+		scrollTo.scrollIntoView({
+			block: 'start',
+			inline: 'start',
+			behavior: 'smooth',
+		});
+	}
+});

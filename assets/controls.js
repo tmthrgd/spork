@@ -1,3 +1,5 @@
+import { headers, fetchThen, fetchCatch, playlistUpdates } from './helpers.js';
+
 document.querySelector('.controls').addEventListener('click', e => {
 	if (!(e.target instanceof HTMLAnchorElement)) {
 		return;
@@ -15,29 +17,20 @@ document.querySelector('.controls').addEventListener('click', e => {
 	}
 
 	e.preventDefault();
-	fetch(e.target.href, {headers}).then(then).catch(fetchCatch);
+	fetch(e.target.href, { headers }).then(then).catch(fetchCatch);
 }, false);
 
 document.querySelector('.volume').addEventListener('input', e => {
 	e.target.title = `${e.target.value}%`;
 
-	fetch(`/controls/volume/${encodeURIComponent(e.target.value)}`, {headers})
+	fetch(`/controls/volume/${encodeURIComponent(e.target.value)}`, { headers })
 		.then(fetchThen, fetchCatch);
 }, false);
 
 const song = document.querySelector('.song');
 
-const es = new EventSource('/playlist/updates');
-
-es.onopen = clearError;
-
-es.onmessage = msg => {
-	clearError();
-
-	const {title, length} = JSON.parse(msg.data);
+playlistUpdates(({ title, length }) => {
 	if (title) {
-		song.textContent = `${title} (${(length/60)|0}:${('0'+(length%60)).slice(-2)})`;
+		song.textContent = `${title} (${(length / 60) | 0}:${('0' + (length % 60)).slice(-2)})`;
 	}
-};
-
-es.onerror = eventSourceError;
+});
