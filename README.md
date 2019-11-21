@@ -1,6 +1,7 @@
 # spork
 
-**spork** is a web-based audacious media player control panel.
+**spork** is a web-based
+[Audacious media player](https://audacious-media-player.org/) control panel.
 
 ![Control panel](control-panel.jpg)
 
