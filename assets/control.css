@@ -1,29 +1,31 @@
+html, body {
+	min-height: 85vh;
+}
+
 body {
-	max-width: 650px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 
-	margin: 40px auto;
-	padding: 0 10px;
+	font-size: 19px;
 
-	font-size: 18px;
-	line-height: 1.6;
+	text-align: center;
 
 	color: #444;
 }
 
-h1, h2, h3 {
-	line-height: 1.2;
+p {
+	margin-bottom: 1rem;
+}
+
+.controls {
+	font-size: 1.125em;
 }
 
 .controls a {
 	color:#444;
-}
 
-.controls a {
 	text-decoration: none;
-}
-
-.controls {
-	text-align: center;
 }
 
 .controls .active {
@@ -31,12 +33,18 @@ h1, h2, h3 {
 	padding-top: 1px;
 }
 
-.song {
-	margin-top: 0;
+.controls input {
+	min-width: 8.5em;
+
+	margin-bottom: 0;
 }
 
 input[type=range]::-moz-range-track {
 	background-color: lightgrey;
+}
+
+.song {
+	margin-top: 0;
 }
 
 .error {
