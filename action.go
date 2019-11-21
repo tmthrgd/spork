@@ -9,7 +9,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/tmthrgd/httputils"
-	"go.tmthrgd.dev/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/dbus"
+	"go.tmthrgd.dev/spork/web"
 )
 
 func actionHandlerResponse(w http.ResponseWriter, r *http.Request, ok, redirect string) error {
@@ -23,7 +24,7 @@ func actionHandlerResponse(w http.ResponseWriter, r *http.Request, ok, redirect 
 }
 
 func jumpHandler() http.HandlerFunc {
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
 		pos, err := strconv.ParseUint(chi.URLParam(r, "pos"), 10, 32)
@@ -44,7 +45,7 @@ func jumpHandler() http.HandlerFunc {
 }
 
 func setVolumeHandler() http.HandlerFunc {
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		vol, err := strconv.ParseUint(chi.URLParam(r, "vol"), 10, 7)
 		if err != nil {
 			return err
@@ -61,7 +62,7 @@ func setVolumeHandler() http.HandlerFunc {
 }
 
 func controlHandler(fn func(context.Context) error, statusFn func(context.Context) (bool, error)) http.HandlerFunc {
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
 		if err := fn(ctx); err != nil {

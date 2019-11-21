@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>{{.Name}} – Spork</title>
+<link rel=stylesheet href="{{assetPath "/style.css"}}">
+<body class=page-playlist>
+<h1>{{.Name}}</h1>
+<p class=error></p>
+<ol class=playlist>
+{{- range $idx, $entry := .Entries}}
+<li{{if eq $idx $.Active}} class=active id="current"{{end}}>
+<details>
+<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{FormatLength .Length}})</summary>
+{{with .Name -}}  <p>Title:  {{.}}</p>{{end}}
+{{with .Artist -}}<p>Artist: {{.}}</p>{{end}}
+{{with .Album -}} <p>Album:  {{.}}</p>{{end}}
+{{with .Year -}}  <p>Year:   {{.}}</p>{{end}}
+<p>Length: {{FormatLength .Length}}</p>
+</details>
+</li>
+{{- end}}
+</ol>
+<script defer src="{{assetPath "/fetch-helpers.js"}}"></script>
+<script defer src="{{assetPath "/playlist.js"}}"></script>

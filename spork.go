@@ -1,6 +1,7 @@
 package main
 
 //go:generate go run -tags=dev internal/assets/generate.go
+//go:generate go run -tags=dev internal/templates/generate.go
 
 import (
 	"context"
@@ -14,16 +15,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/tmthrgd/httphandlers"
-	"go.tmthrgd.dev/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/dbus"
 )
 
 var shutdown = make(chan struct{})
 
 func init() {
-	log.SetFlags(log.Lshortfile)
+	log.SetFlags(0)
 }
 
 func main() {
@@ -40,62 +38,15 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	router := chi.NewRouter()
-	router.Use(
-		middleware.GetHead,
-		handlers.AccessLogWrap(nil),
-		handlers.SecurityHeadersWrap(nil),
-		handlers.SetHeaderWrap("Server", "spork (audacious control panel)"),
-	)
-	router.NotFound(notFoundHandler())
-
-	// pprof handler
-	router.Mount("/debug", middleware.Profiler())
-
-	// Asset routes
-	router.Group(func(r chi.Router) {
-		r.Get("/favicon.ico", faviconHandler())
-		r.Get("/robots.txt", robotsHandler())
-
-		r.Mount("/assets", assetsHandler())
-	})
-
-	// HTML page routes
-	router.Group(func(r chi.Router) {
-		r.Use(middleware.NoCache)
-
-		r.Get("/", controlsHandler())
-		r.Get("/playlist", playlistHandler())
-	})
-
-	// API routes
-	router.Group(func(r chi.Router) {
-		r.Use(
-			undoGetHead,
-			middleware.NoCache,
-		)
-
-		r.Get("/jump/{pos}", jumpHandler())
-		r.Get("/controls/playpause", playPauseHandler())
-		r.Get("/controls/stop", stopHandler())
-		r.Get("/controls/prev", prevHandler())
-		r.Get("/controls/next", nextHandler())
-		r.Get("/controls/repeat", repeatHandler())
-		r.Get("/controls/shuffle", shuffleHandler())
-		r.Get("/controls/volume/{vol}", setVolumeHandler())
-		r.Get("/playlist/updates", playlistUpdateHandler(ctx))
-		r.Get("/launch", launchHandler())
-	})
-
 	fmt.Printf("Listening on %s\n", *addr)
 
 	srv := &http.Server{
 		Addr:    *addr,
-		Handler: router,
+		Handler: handler(ctx),
 	}
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 			log.Fatal(err)
 		}
 	}()
@@ -119,6 +70,6 @@ func main() {
 	close(shutdown)
 
 	if err := srv.Shutdown(sctx); err != nil {
-		log.Printf("error shutting down: %v", err)
+		log.Printf("spork: error shutting down: %v", err)
 	}
 }

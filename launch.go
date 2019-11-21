@@ -7,7 +7,8 @@ import (
 	"sync"
 	"syscall"
 
-	"go.tmthrgd.dev/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/dbus"
+	"go.tmthrgd.dev/spork/web"
 )
 
 func launchHandler() http.HandlerFunc {
@@ -23,7 +24,7 @@ func launchHandler() http.HandlerFunc {
 
 	var mu sync.Mutex
 
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		mu.Lock()
 		defer mu.Unlock()
 

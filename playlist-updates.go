@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -10,7 +11,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"go.tmthrgd.dev/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/dbus"
+	"go.tmthrgd.dev/spork/web"
 )
 
 type updateJSON struct {
@@ -44,7 +46,7 @@ func (u *updateJSON) fill(ctx context.Context) error {
 func (u *updateJSON) marshal() []byte {
 	data, err := json.Marshal(u)
 	if err != nil {
-		panic("spork: unable to marshal *updateJSON: " + err.Error())
+		panic("spork: internal error: unable to marshal *updateJSON: " + err.Error())
 	}
 
 	return data
@@ -91,13 +93,16 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 				}
 
 				continue
-			} else if data.Position == old.pos {
+			}
+
+			nextData := data.marshal()
+			if bytes.Equal(old.data, nextData) {
 				continue
 			}
 
 			next := &updateData{
 				pos:  data.Position,
-				data: data.marshal(),
+				data: nextData,
 
 				nextCh: make(chan struct{}),
 			}
@@ -110,7 +115,7 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 		}
 	}()
 
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		f, ok := w.(http.Flusher)
 		if !ok {
 			return errors.New("spork: http.ResponseWriter does not implement http.Flusher")
@@ -124,7 +129,6 @@ func playlistUpdateHandler(ctx context.Context) http.HandlerFunc {
 		f.Flush()
 
 		update := update.Load().(*updateData)
-
 		for {
 			select {
 			case <-update.nextCh:

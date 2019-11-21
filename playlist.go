@@ -1,38 +1,20 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
 
-	"go.tmthrgd.dev/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/dbus"
+	"go.tmthrgd.dev/spork/web"
 	"golang.org/x/sync/errgroup"
 )
 
-var playlistTmpl = newTemplate(`<!doctype html>
-<meta charset=utf-8>
-<title>{{.Name}} – Spork</title>
-<link rel=stylesheet href=/assets/style.css>
-<body class=page-playlist>
-<h1>{{.Name}}</h1>
-<p class=error></p>
-<ol class=playlist>
-{{- range $idx, $entry := .Entries}}
-<li{{if eq $idx $.Active}} class=active id="current"{{end}}>
-<details>
-<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{FormatLength .Length}})</summary>
-{{if .Name -}}  <p>Title:  {{.Name}}</p>{{end}}
-{{if .Artist -}}<p>Artist: {{.Artist}}</p>{{end}}
-{{if .Album -}} <p>Album:  {{.Album}}</p>{{end}}
-{{if .Year -}}  <p>Year:   {{.Year}}</p>{{end}}
-<p>Length: {{FormatLength .Length}}</p>
-</details>
-</li>
-{{- end}}
-</ol>
-<script defer src=/assets/fetch-helpers.js></script>
-<script defer src=/assets/playlist.js></script>`)
+var playlistTmpl = web.NewTemplate("playlist.tmpl", template.FuncMap{
+	"FormatLength": formatLength,
+})
 
 func playlistHandler() http.HandlerFunc {
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
 		entries, err := dbus.GetPlaylistLength(ctx)
@@ -112,7 +94,7 @@ func playlistHandler() http.HandlerFunc {
 			return err
 		}
 
-		return templateExecute(w, playlistTmpl, &struct {
+		return web.WriteTemplateResponse(w, playlistTmpl, &struct {
 			Name    string
 			Entries []playlistEntry
 			Active  uint32

@@ -1,36 +1,20 @@
 package main
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
 
-	"go.tmthrgd.dev/spork/internal/dbus"
+	"go.tmthrgd.dev/spork/dbus"
+	"go.tmthrgd.dev/spork/web"
 )
 
-var controlTmpl = newTemplate(`<!doctype html>
-<meta charset=utf-8>
-<title>Audacious Control Panel – Spork</title>
-<link rel=stylesheet href=/assets/style.css>
-<body class=page-controls>
-<h1>Audacious Control Panel</h1>
-<div class=controls>
-<a href=/controls/prev title=Previous>⏮</a>
-<a href=/controls/stop title=Stop>⏹</a>
-<a href=/controls/playpause title=Play/Pause>⏯</a>
-<a href=/controls/next title=Next>⏭</a>
-&nbsp;
-<a href=/controls/repeat title=Repeat data-toggle {{- if .Repeat}} class="active"{{end}}>🔁</a>
-<a href=/controls/shuffle title=Shuffle data-toggle {{- if .Shuffle}} class="active"{{end}}>🔀</a>
-<br>
-<input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
-<p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>
-<p class=error></p>
-</div>
-<a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
-<script defer src=/assets/fetch-helpers.js></script>
-<script defer src=/assets/controls.js></script>`)
+var controlTmpl = web.NewTemplate("control.tmpl", template.FuncMap{
+	"FormatLength": formatLength,
+})
 
 func controlsHandler() http.HandlerFunc {
-	return errorHandler(func(w http.ResponseWriter, r *http.Request) error {
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
 		volume, err := dbus.GetVolume(ctx)
@@ -63,11 +47,17 @@ func controlsHandler() http.HandlerFunc {
 			return err
 		}
 
-		return templateExecute(w, controlTmpl, &struct {
+		return web.WriteTemplateResponse(w, controlTmpl, &struct {
 			Volume          int32
 			Title           string
 			Length          int32
 			Shuffle, Repeat bool
 		}{volume, title, length, shuffle, repeat})
 	})
+}
+
+// formatLength formats a given song length in seconds into a display friendly
+// minute:seconds format.
+func formatLength(length int32) string {
+	return fmt.Sprintf("%d:%02d", length/60, length%60)
 }

@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Audacious Control Panel – Spork</title>
+<link rel=stylesheet href="{{assetPath "/style.css"}}">
+<body class=page-controls>
+<h1>Audacious Control Panel</h1>
+<div class=controls>
+<a href=/controls/prev title=Previous>⏮</a>
+<a href=/controls/stop title=Stop>⏹</a>
+<a href=/controls/playpause title=Play/Pause>⏯</a>
+<a href=/controls/next title=Next>⏭</a>
+&nbsp;
+<a href=/controls/repeat title=Repeat data-toggle {{- if .Repeat}} class="active"{{end}}>🔁</a>
+<a href=/controls/shuffle title=Shuffle data-toggle {{- if .Shuffle}} class="active"{{end}}>🔀</a>
+<br>
+<input type=range min=0 max=100 value="{{.Volume}}" title="{{.Volume}}%" class=volume>
+<p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>
+<p class=error></p>
+</div>
+<a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
+<script defer src="{{assetPath "/fetch-helpers.js"}}"></script>
+<script defer src="{{assetPath "/controls.js"}}"></script>

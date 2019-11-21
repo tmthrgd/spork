@@ -1,4 +1,4 @@
-// +build ignore
+// +build generate
 
 package main
 
@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/shurcooL/vfsgen"
-	"github.com/tmthrgd/spork/internal/assets"
+	"go.tmthrgd.dev/spork/internal/assets"
 )
 
 func main() {
