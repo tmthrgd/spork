@@ -9,5 +9,5 @@
 <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Raleway&amp;display=swap">
 <main class=container>
 <h1>{{.StatusCode}} {{httpStatusText .StatusCode}}</h1>
-<p>{{with .Type}}<code>{{.}}</code>: {{end}}{{with .Name}} <code>{{.}}</code>: {{end -}} {{.Message}}</p>
+<p>{{with .Type}}<code>{{.}}</code>: {{end}}{{with .Name}} <code>{{.}}</code>: {{end}}{{.Message}}</p>
 </main>

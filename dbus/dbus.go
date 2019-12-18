@@ -1,7 +1,11 @@
 // Package dbus implements a D-Bus interface to Audacious.
 package dbus
 
-import "github.com/godbus/dbus"
+import (
+	"errors"
+
+	"github.com/godbus/dbus"
+)
 
 // Error represents a D-Bus message of type Error.
 type Error = dbus.Error
@@ -30,6 +34,7 @@ func BusConnect() error {
 // org.freedesktop.DBus.Error.ServiceUnknown error. An error of this type will
 // be returned if Audacious is closed.
 func IsUnknownServiceError(err error) bool {
-	derr, _ := err.(dbus.Error)
-	return derr.Name == "org.freedesktop.DBus.Error.ServiceUnknown"
+	var derr dbus.Error
+	return errors.As(err, &derr) &&
+		derr.Name == "org.freedesktop.DBus.Error.ServiceUnknown"
 }

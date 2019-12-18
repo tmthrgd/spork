@@ -35,8 +35,6 @@ var errorTmpl = NewTemplate("error.tmpl", template.FuncMap{
 	"httpStatusText": http.StatusText,
 })
 
-var error502Tmpl = NewTemplate("errorNoAudacious.tmpl", nil)
-
 // ErrorHandler converts a handler with an error return to a http.HandlerFunc,
 // sending a HTTP error code and a JSON formatted RFC 7807 problem detail
 // document to the client appropriate for a given error.
@@ -47,25 +45,13 @@ func ErrorHandler(handler func(http.ResponseWriter, *http.Request) error) http.H
 			return
 		}
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-		if dbus.IsUnknownServiceError(err) {
-			w.WriteHeader(http.StatusBadGateway)
-
-			var buf bytes.Buffer
-			if error502Tmpl.Execute(&buf, nil) == nil {
-				buf.WriteTo(w)
-			} else {
-				fmt.Fprint(w, "502 Bad Gateway: The Audacious Media Player is not currently running. Please launch Audacious and try again.")
-			}
-
-			return
-		}
-
 		statusCode := http.StatusInternalServerError
 		errorMsg := html.EscapeString(err.Error())
 		var typ, name string
 		switch {
+		case dbus.IsUnknownServiceError(err):
+			statusCode = http.StatusBadGateway
+			errorMsg = "The Audacious Media Player is not currently running. Please <a href=/launch>launch Audacious</a> and try again."
 		case errors.Is(err, os.ErrNotExist):
 			statusCode = http.StatusNotFound
 			errorMsg = "The requested file was not found."
@@ -75,10 +61,13 @@ func ErrorHandler(handler func(http.ResponseWriter, *http.Request) error) http.H
 				html.EscapeString(r.Method), html.EscapeString(r.URL.Path))
 		default:
 			typ = reflect.ValueOf(err).Type().String()
-			derr, _ := err.(dbus.Error)
+
+			var derr dbus.Error
+			errors.As(err, &derr)
 			name = derr.Name
 		}
 
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(statusCode)
 
 		var buf bytes.Buffer
