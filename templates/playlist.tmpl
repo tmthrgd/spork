@@ -14,7 +14,7 @@
 {{- range $idx, $entry := .Entries}}
 <li{{if eq $idx $.Active}} class=active id="current"{{end}}>
 <details>
-<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{FormatLength .Length}})</summary>
+<summary><a href="/jump/{{$idx}}">{{.Title}}</a> ({{FormatLength .Length}}) <a href="/download/{{$idx}}" title="Download {{.Title}}">➚</a></summary>
 {{with .Name -}}  <p>Title:  {{.}}</p>{{end}}
 {{with .Artist -}}<p>Artist: {{.}}</p>{{end}}
 {{with .Album -}} <p>Album:  {{.}}</p>{{end}}

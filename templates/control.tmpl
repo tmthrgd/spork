@@ -22,6 +22,6 @@
 </div>
 <p class=song>{{if .Title}}{{.Title}} ({{FormatLength .Length}}){{end}}</p>
 <p class=error></p>
-<a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a>
+<a href=/playlist>Active Playlist</a> – <a href=/playlist#current>Current Song</a> <a href="/download/{{.Pos}}" title="Download{{with .Title}} {{.}}{{end}}">➚</a>
 </main>
 <script defer type=module src="{{assetPath "/controls.js"}}"></script>

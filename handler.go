@@ -39,6 +39,7 @@ func handler(ctx context.Context) http.Handler {
 		r.Use(middleware.NoCache)
 
 		r.Get("/jump/{pos}", jumpHandler())
+		r.Get("/download/{pos}", downloadHandler())
 		r.Get("/controls/playpause", playPauseHandler())
 		r.Get("/controls/stop", stopHandler())
 		r.Get("/controls/prev", prevHandler())

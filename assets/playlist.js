@@ -6,6 +6,9 @@ playlist.addEventListener('click', e => {
 	if (!(e.target instanceof HTMLAnchorElement)) {
 		return;
 	}
+	if (!e.target.pathname.startsWith('/jump/')) {
+		return;
+	}
 
 	e.preventDefault();
 	fetch(e.target.href, { headers }).then(fetchThen, fetchCatch);

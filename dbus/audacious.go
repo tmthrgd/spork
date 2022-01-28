@@ -53,6 +53,12 @@ func GetSongYear(ctx context.Context, entry uint32) (year int32, err error) {
 	return year, err
 }
 
+// GetSongFilename returns the filename of the given song in the active playlist.
+func GetSongFilename(ctx context.Context, entry uint32) (filename string, err error) {
+	return filename, audObj.CallWithContext(ctx,
+		"org.atheme.audacious.SongFilename", 0, entry).Store(&filename)
+}
+
 // GetPlaylistPosition returns the currently selected song in the active playlist.
 func GetPlaylistPosition(ctx context.Context) (position uint32, err error) {
 	return position, audObj.CallWithContext(ctx,

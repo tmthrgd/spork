@@ -48,11 +48,12 @@ func controlsHandler() http.HandlerFunc {
 		}
 
 		return web.WriteTemplateResponse(w, controlTmpl, &struct {
+			Pos             uint32
 			Volume          int32
 			Title           string
 			Length          int32
 			Shuffle, Repeat bool
-		}{volume, title, length, shuffle, repeat})
+		}{pos, volume, title, length, shuffle, repeat})
 	})
 }
 

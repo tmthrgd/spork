@@ -3,9 +3,14 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/tmthrgd/httputils"
@@ -89,3 +94,37 @@ func prevHandler() http.HandlerFunc      { return controlHandler(dbus.Reverse, n
 func nextHandler() http.HandlerFunc      { return controlHandler(dbus.Advance, nil) }
 func repeatHandler() http.HandlerFunc    { return controlHandler(dbus.ToggleRepeat, dbus.GetRepeat) }
 func shuffleHandler() http.HandlerFunc   { return controlHandler(dbus.ToggleShuffle, dbus.GetShuffle) }
+
+func downloadHandler() http.HandlerFunc {
+	var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
+
+	return web.ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
+		pos, err := strconv.ParseUint(chi.URLParam(r, "pos"), 10, 32)
+		if err != nil {
+			return err
+		}
+
+		filename, err := dbus.GetSongFilename(r.Context(), uint32(pos))
+		if err != nil {
+			return err
+		}
+		if filename == "" {
+			return os.ErrNotExist
+		}
+
+		u, err := url.Parse(filename)
+		if err != nil {
+			return err
+		}
+		if u.Scheme != "file" {
+			return errors.New("spork: song has unsupported filename")
+		}
+
+		base := filepath.Base(u.Path)
+		w.Header().Set("Content-Disposition",
+			fmt.Sprintf(`inline; filename="%s"`, quoteEscaper.Replace(base)))
+
+		http.ServeFile(w, r, u.Path)
+		return nil
+	})
+}
